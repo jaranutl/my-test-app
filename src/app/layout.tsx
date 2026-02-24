@@ -3,13 +3,13 @@ import { Geist, Geist_Mono, Noto_Sans_Thai_Looped } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Navbar2 from "@/components/navbar/Navbar2";
+import { Footer } from "@/components/footer/Footer";
 
 const notoSansThaiLooped = Noto_Sans_Thai_Looped({
   variable: "--font-noto-sans-thai-looped",
   subsets: ["latin", "thai"],
 });
 
-const thisyear = new Date().getFullYear();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +39,7 @@ export default function RootLayout({
         <Navbar2 />
         {children}
         <footer className="p-4 text-center text-sm text-gray-500">
-          &copy; {thisyear} Florist. All rights reserved. Powered by Next.js. from Job and Ohmyim
+          <Footer />
         </footer>
       </body>
     </html>
