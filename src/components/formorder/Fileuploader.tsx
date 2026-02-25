@@ -44,7 +44,7 @@ export default function FileUploader() {
 
     return (
         <div className="w-auto max-w-md flex flex-col items-center gap-6 mb-5">
-            <h2 className="text-2xl font-semibold text-gray-800 text-center">รูปตัวอย่าง</h2>
+            <h2 className="text-xl font-semibold text-gray-800 text-center">ช่อตัวอย่าง</h2>
 
             {/* Drop Zone */}
             {!preview && (

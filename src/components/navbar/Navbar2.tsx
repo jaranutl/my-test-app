@@ -18,7 +18,7 @@ const Navbar2 = () => {
     // <header className="w-full bg-[#4cddf0]">
       <div className="mx-auto ">
         {/* outer frame */}
-        <nav className="flex items-stretch justify-between border-black/20 bg-[#82ffff]">
+        <nav className="flex items-stretch justify-between border-black/20 bg-[#fbe29d]">
           {/* left: logo */}
           <Link
             href="/"
