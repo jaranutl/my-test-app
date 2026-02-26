@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { DatePicker, DatePickerInput } from "@mantine/dates";
+import { DatePickerInput } from "@mantine/dates";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 
@@ -147,6 +147,7 @@ export const Formflower = () => {
        <div className="flex flex-wrap items-end gap-6 mb-4">
         <div className="flex flex-col gap-2 w-full max-w-xs">
             <DatePickerInput
+            clearable
             label="วันที่รับช่อ"
             placeholder="เลือกวันที่"
             value={deliveryDate}
@@ -154,6 +155,7 @@ export const Formflower = () => {
             locale="th"
             minDate={new Date()}
             withWeekNumbers={false}
+            dropdownType="popover"
             firstDayOfWeek={1} // จันทร์เป็นวันแรก (เหมาะกับไทย)
 
             // ✅ กัน DaisyUI/Tailwind ชน + บังคับ grid ของ calendar ให้สวย
