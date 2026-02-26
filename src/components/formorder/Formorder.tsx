@@ -1,4 +1,5 @@
 import React from 'react'
+import { Formflower } from './Formflower'
 
 export const Formorder = () => {
   return (
@@ -13,12 +14,15 @@ export const Formorder = () => {
         <div className="mt-4 flex space-x-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">ชื่อ LINE ลูกค้า</label>
-            <input type="text" id="name" name="name" className="mt-1 block w-auto border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="กรอกชื่อ LINE ลูกค้า" />
+            <input type="text" id="name" name="name" className="mt-1 block w-auto border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 lg:text-md" placeholder="กรอกชื่อ LINE ลูกค้า" />
           </div>
           <div>
             <label htmlFor="phone" className="block text-sm font-medium text-gray-700">เบอร์โทรศัพท์</label>
-            <input type="tel" id="phone" name="phone" className="mt-1 block w-auto border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="กรอกเบอร์โทรศัพท์" />
+            <input type="tel" id="phone" name="phone" className="mt-1 block w-auto border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 lg:text-md" placeholder="กรอกเบอร์โทรศัพท์" />
           </div>
+        </div>
+        <div className="mt-4">
+          <Formflower />
         </div>
     </div>
   )
