@@ -1,84 +1,230 @@
-import React from 'react'
-import {DatePicker} from "@heroui/date-picker";
+"use client";
+
+import React, { useState } from "react";
+import { DatePicker, DatePickerInput } from "@mantine/dates";
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+
+dayjs.locale("th");
 
 export const Formflower = () => {
-    return (
-        <div className="flex w-full gap-4 border-2 border-gray-300 rounded-md p-4">
-            <div className="card grid h-auto grow place-items-center">
-                <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-                    <table className="table">
-                        {/* head */}
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>ชนิดดอกไม้</th>
-                                <th>สี</th>
-                                <th>จำนวน</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {/* row 1 */}
-                            <tr className="hover:bg-gray-100">
-                                <th>1</th>
-                                <td><input type="text" className="input input-bordered w-full max-w-xs" placeholder="ชนิดดอกไม้" /></td>
-                                <td><input type="text" className="input input-bordered w-full max-w-xs" placeholder="สีดอกไม้" /></td>
-                                <td><input type="number" min={0} step={1} className="input input-bordered w-full max-w-xs" placeholder="จำนวน" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    เพิ่มแถว
-                </button>
-            </div>
-            <div className="card grid h-auto grow">
-                <div className="  gap-2 mb-4">
-                    <label htmlFor="note" className="block text-md font-medium text-gray-700">เขียนการ์ดอวยพร</label>
-                    <textarea id="note" name="note" rows={4} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 lg:text-md" placeholder="กรอกข้อความสำหรับการ์ดอวยพร"></textarea>
-                    <span className="label text-sm">*ไม่บังคับ</span>
-                </div>
-                <div className=' gap-2 mb-4'>
-                    <label htmlFor="note" className=" block text-sm font-medium text-gray-700">สีกระดาษห่อ</label>
-                    <select defaultValue="Pick a color" className="select">
-                        <option disabled={true}>กรุณาเลือกสี</option>
-                        <option>Crimson</option>
-                        <option>Amber</option>
-                        <option>Velvet</option>
-                    </select>
-                </div>
-                <div className=' gap-2 mb-4'>
-                    <label htmlFor="note" className=" block text-sm font-medium text-gray-700">สีโบว์</label>
-                    <select defaultValue="Pick a color" className="select">
-                        <option disabled={true}>กรุณาเลือกสี</option>
-                        <option>Crimson</option>
-                        <option>Amber</option>
-                        <option>Velvet</option>
-                    </select>
-                </div>
-                <div className=' gap-2 mb-4'>
-                    <label htmlFor="note" className=" block text-sm font-medium text-gray-700">ราคาช่อ</label>
-                    <input type="number" min={0} className="input input-bordered w-full max-w-xs" placeholder="กรอกจำนวนเงิน (บาท)" />
-                </div>
-                <div className='flex items-center gap-8 mb-4'>
-                    <label className="inline-flex items-center cursor-pointer">
-                        <input type="radio" value={"workin"} name="pickup" className="radio radio-primary radio-md" defaultChecked />
-                        <span className="ml-2 text-md">รับช่อที่ร้าน</span>
-                    </label>
-                    <label className="inline-flex items-center cursor-pointer">
-                        <input type="radio" value={"delivery"} name="pickup" className="radio radio-primary radio-md" />
-                        <span className="ml-2 text-md">ให้จัดส่ง</span>
-                    </label>
-                </div>
-                <div className='flex items-center gap-8 mb-4'>
-                    <div className=' gap-2 mb-4'>
-                        <DatePicker className="max-w-71" label="วันที่รับช่อ" />
-                    </div>
-                    <div className=' gap-2 mb-4'>
-                        <label htmlFor="note" className=" block text-sm font-medium text-gray-700">เวลาที่รับช่อ</label>
-                        <input type="time" className="input input-bordered w-full max-w-xs" />
-                    </div>
-                </div>
-            </div>
+  const [pickupMode, setPickupMode] = useState<"workin" | "delivery">("workin");
+  const [deliveryDate, setDeliveryDate] = useState<Date | null>(null);
+  const [deliveryTime, setDeliveryTime] = useState<string>("");
+
+  return (
+    <div className="flex w-full gap-4 border-2 border-gray-300 rounded-md p-4">
+      {/* LEFT: table */}
+      <div className="card h-auto grow flex flex-col items-center">
+        <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-full">
+          <table className="table w-full">
+            <thead>
+              <tr>
+                <th></th>
+                <th>ชนิดดอกไม้</th>
+                <th>สี</th>
+                <th>จำนวน</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="hover:bg-gray-100">
+                <th>1</th>
+                <td>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full max-w-xs"
+                    placeholder="ชนิดดอกไม้"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    className="input input-bordered w-full max-w-xs"
+                    placeholder="สีดอกไม้"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min={0}
+                    step={1}
+                    className="input input-bordered w-full max-w-xs"
+                    placeholder="จำนวน"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-    )
-}
+
+        <button className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          เพิ่มแถว
+        </button>
+      </div>
+
+      {/* RIGHT: form */}
+      <div className="card h-auto grow flex flex-col">
+        {/* Card message */}
+        <div className="flex flex-col gap-2 mb-4">
+          <label htmlFor="cardMessage" className="block text-md font-medium text-gray-700">
+            เขียนการ์ดอวยพร
+          </label>
+          <textarea
+            id="cardMessage"
+            name="cardMessage"
+            rows={4}
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 lg:text-md"
+            placeholder="กรอกข้อความสำหรับการ์ดอวยพร"
+          />
+          <span className="label text-sm">*ไม่บังคับ</span>
+        </div>
+
+        {/* Paper color */}
+        <div className="flex flex-col gap-2 mb-4">
+          <label className="block text-sm font-medium text-gray-700">สีกระดาษห่อ</label>
+          <select defaultValue="" className="select select-bordered w-full max-w-xs">
+            <option value="" disabled>
+              กรุณาเลือกสี
+            </option>
+            <option value="crimson">Crimson</option>
+            <option value="amber">Amber</option>
+            <option value="velvet">Velvet</option>
+          </select>
+        </div>
+
+        {/* Bow color */}
+        <div className="flex flex-col gap-2 mb-4">
+          <label className="block text-sm font-medium text-gray-700">สีโบว์</label>
+          <select defaultValue="" className="select select-bordered w-full max-w-xs">
+            <option value="" disabled>
+              กรุณาเลือกสี
+            </option>
+            <option value="crimson">Crimson</option>
+            <option value="amber">Amber</option>
+            <option value="velvet">Velvet</option>
+          </select>
+        </div>
+
+        {/* Price */}
+        <div className="flex flex-col gap-2 mb-4">
+          <label className="block text-sm font-medium text-gray-700">ราคาช่อ</label>
+          <input
+            type="number"
+            min={0}
+            className="input input-bordered w-full max-w-xs"
+            placeholder="กรอกจำนวนเงิน (บาท)"
+          />
+        </div>
+
+        {/* Pickup mode */}
+        <div className="flex items-center gap-8 mb-4">
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="radio"
+              value="workin"
+              name="pickup"
+              className="radio radio-primary radio-md"
+              checked={pickupMode === "workin"}
+              onChange={() => setPickupMode("workin")}
+            />
+            <span className="ml-2 text-md">รับช่อที่ร้าน</span>
+          </label>
+
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="radio"
+              value="delivery"
+              name="pickup"
+              className="radio radio-primary radio-md"
+              checked={pickupMode === "delivery"}
+              onChange={() => setPickupMode("delivery")}
+            />
+            <span className="ml-2 text-md">ให้จัดส่ง</span>
+          </label>
+        </div>
+
+        {/* Date + Time */}
+       <div className="flex flex-wrap items-end gap-6 mb-4">
+        <div className="flex flex-col gap-2 w-full max-w-xs">
+            <DatePickerInput
+            label="วันที่รับช่อ"
+            placeholder="เลือกวันที่"
+            value={deliveryDate}
+            onChange={setDeliveryDate}
+            locale="th"
+            minDate={new Date()}
+            withWeekNumbers={false}
+            firstDayOfWeek={1} // จันทร์เป็นวันแรก (เหมาะกับไทย)
+
+            // ✅ กัน DaisyUI/Tailwind ชน + บังคับ grid ของ calendar ให้สวย
+            styles={{
+                calendar: { tableLayout: "fixed" },
+                monthCell: { padding: 2 },
+                day: {
+                width: 36,
+                height: 36,
+                lineHeight: "36px",
+                fontSize: "14px",
+                },
+                weekday: {
+                width: 36,
+                height: 28,
+                lineHeight: "28px",
+                fontSize: "13px",
+                },
+            }}
+
+            // ✅ แนะนำให้กำหนดขนาด input ให้คงที่
+            size="md"
+            radius="md"
+            />
+        </div>
+
+
+          <div className="flex flex-col gap-2 w-full max-w-xs">
+            <label className="block text-sm font-medium text-gray-700">เวลาที่รับช่อ</label>
+            <input
+              type="time"
+              className="input input-bordered w-full"
+              value={deliveryTime}
+              onChange={(e) => setDeliveryTime(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Delivery fields */}
+        {pickupMode === "delivery" && (
+          <div className="flex flex-col gap-3 mt-2 p-3 rounded-md border border-gray-200">
+            <div className="text-sm font-medium text-gray-700">
+              ข้อมูลจัดส่ง (แสดงเมื่อเลือก “ให้จัดส่ง”)
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700">ชื่อผู้รับ</label>
+              <input className="input input-bordered w-full" placeholder="ชื่อผู้รับ" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700">เบอร์โทรผู้รับ</label>
+              <input className="input input-bordered w-full" placeholder="เบอร์โทร" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700">ที่อยู่จัดส่ง</label>
+              <textarea
+                className="textarea textarea-bordered w-full"
+                rows={3}
+                placeholder="ที่อยู่ละเอียด + จุดสังเกต"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-gray-700">ลิงก์แผนที่ (ถ้ามี)</label>
+              <input className="input input-bordered w-full" placeholder="https://maps.google.com/..." />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

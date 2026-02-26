@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Navbar2 from "@/components/navbar/Navbar2";
 import { Footer } from "@/components/footer/Footer";
+import Providers from "./providers";
 
 const notoSansThaiLooped = Noto_Sans_Thai_Looped({
   variable: "--font-noto-sans-thai-looped",
@@ -36,11 +37,13 @@ export default function RootLayout({
       <body
         className={` ${notoSansThaiLooped.className} antialiased`}
       >
+        <Providers>
         <Navbar2 />
         {children}
         <footer className="p-4 text-center text-sm text-gray-500">
           <Footer />
         </footer>
+        </Providers>
       </body>
     </html>
   );
