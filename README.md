@@ -21,6 +21,9 @@ install DatePicker : mantine
 ```
 npm install @mantine/core @mantine/dates dayjs
 ```
+```
+npm install uuid
+```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
