@@ -3,17 +3,17 @@
 import React, { useState, ChangeEvent } from "react";
 import { DatePickerInput } from "@mantine/dates";
 import { Autocomplete } from "@mantine/core";
+import "@mantine/dates/styles.css";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import { CheckBox } from "@mui/icons-material";
-
 import { v4 as uuidv4 } from "uuid";
 
 dayjs.locale("th");
 
 export const Formflower = () => {
   const [pickupMode, setPickupMode] = useState<"workin" | "delivery">("workin");
-  const [deliveryDate, setDeliveryDate] = useState<Date | null>(null);
+  const [deliveryDate, setDeliveryDate] = useState<string | null>(null);
   const [deliveryTime, setDeliveryTime] = useState<string>("");
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
@@ -149,21 +149,44 @@ export const Formflower = () => {
             </tbody>
           </table>
         </div>
+        <div className="w-full flex justify-end mt-3">
+          <button
+            type="button"
+            onClick={addRow}
+            disabled={!canAdd}
+            className={`mt-3 btn btn-sm ${
+              !canAdd ? "btn-disabled" : "btn-primary text-white"
+            }`}
+          >
+            + เพิ่มชนิดดอกไม้
+          </button>
+        </div>
+        {/* Card message */}
+        <div className="flex flex-col gap-2 mb-4 w-full mt-3">
+          <div className="flex flex-row gap-2 items-center">
+            <input
+              type="checkbox"
+              className="checkbox checkbox-md"
+              onChange={handleToggle}
+            />
+            <label className="text-md font-medium text-gray-700">
+              เขียนการ์ดอวยพร
+            </label>
+            <span className="text-sm text-gray-500">*ไม่บังคับ</span>
+          </div>
 
-        <button
-          type="button"
-          onClick={addRow}
-          disabled={!canAdd}
-          className={`mt-3 btn btn-sm ${
-            !canAdd ? "btn-disabled" : "btn-primary text-white"
-          }`}
-        >
-          + เพิ่มชนิดดอกไม้
-        </button>
+          {isVisible && (
+            <textarea
+              rows={4}
+              className="textarea textarea-bordered w-full"
+              placeholder="กรอกข้อความสำหรับการ์ดอวยพร"
+            />
+          )}
+        </div>
       </div>
 
       {/* RIGHT: form */}
-      <div className="card h-auto grow flex flex-row gap-3">
+      <div className="card h-auto grow flex flex-col gap-3">
         <div className="flex flex-col">
           {/* Paper color */}
           <div className="flex flex-col gap-2 mb-4">
@@ -201,34 +224,6 @@ export const Formflower = () => {
             </select>
           </div>
 
-          {/* Card message */}
-          <div className="flex flex-col gap-2 mb-4">
-            <div className="flex flex-row gap-2">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-md"
-                onChange={handleToggle}
-              />
-              <label
-                htmlFor="cardMessage"
-                className="block text-md font-medium text-gray-700"
-              >
-                เขียนการ์ดอวยพร
-              </label>
-
-              <span className="label text-sm">*ไม่บังคับ</span>
-            </div>
-            {isVisible && (
-              <textarea
-                id="cardMessage"
-                name="cardMessage"
-                rows={4}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 lg:text-md"
-                placeholder="กรอกข้อความสำหรับการ์ดอวยพร"
-              />
-            )}
-          </div>
-
           {/* Price */}
           <div className="flex flex-col gap-2 mb-4">
             <label className="block text-sm font-medium text-gray-700">
@@ -242,7 +237,7 @@ export const Formflower = () => {
             />
           </div>
 
-          {/* Pickup mode */}
+          {/* Pickup mode
           <div className="flex items-center gap-8 mb-4">
             <label className="inline-flex items-center cursor-pointer">
               <input
@@ -267,7 +262,7 @@ export const Formflower = () => {
               />
               <span className="ml-2 text-md">ให้จัดส่ง</span>
             </label>
-          </div>
+          </div> */}
 
           {/* Date + Time */}
           <div className="flex flex-wrap items-end gap-6 mb-4">
@@ -279,13 +274,12 @@ export const Formflower = () => {
                 value={deliveryDate}
                 onChange={setDeliveryDate}
                 locale="th"
-                minDate={new Date()}
+                // minDate={new Date()}
                 withWeekNumbers={false}
                 dropdownType="popover"
                 firstDayOfWeek={1} // จันทร์เป็นวันแรก (เหมาะกับไทย)
                 // ✅ กัน DaisyUI/Tailwind ชน + บังคับ grid ของ calendar ให้สวย
                 styles={{
-                  calendar: { tableLayout: "fixed" },
                   monthCell: { padding: 2 },
                   day: {
                     width: 36,
@@ -318,54 +312,85 @@ export const Formflower = () => {
               />
             </div>
           </div>
+          {/* Pickup mode */}
+          <div className="flex items-center gap-8 mb-4">
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="radio"
+                value="workin"
+                name="pickup"
+                className="radio radio-primary radio-md"
+                checked={pickupMode === "workin"}
+                onChange={() => setPickupMode("workin")}
+              />
+              <span className="ml-2 text-md">รับช่อที่ร้าน</span>
+            </label>
+
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="radio"
+                value="delivery"
+                name="pickup"
+                className="radio radio-primary radio-md"
+                checked={pickupMode === "delivery"}
+                onChange={() => setPickupMode("delivery")}
+              />
+              <span className="ml-2 text-md">ให้จัดส่ง</span>
+            </label>
+          </div>
         </div>
 
-        {/* Delivery fields */}
+        {/* ✅ ย้ายข้อมูลจัดส่งมาด้านล่าง radio */}
         {pickupMode === "delivery" && (
-          <div className="flex flex-col gap-3 mt-2 p-3 rounded-md border border-gray-200">
-            <div className="text-sm font-medium text-gray-700">
-              ข้อมูลจัดส่ง (แสดงเมื่อเลือก “ให้จัดส่ง”)
-            </div>
+          <div className="w-full">
+            <div className="rounded-md border border-gray-200 bg-white p-4">
+              <div className="text-sm font-semibold text-gray-700 mb-3">
+                ข้อมูลจัดส่ง
+              </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700">
-                ชื่อผู้รับ
-              </label>
-              <input
-                className="input input-bordered w-full"
-                placeholder="ชื่อผู้รับ"
-              />
-            </div>
+              {/* ให้เริ่มชิดซ้ายตรงกับตาราง */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    ชื่อผู้รับ
+                  </label>
+                  <input
+                    className="mt-1 input input-bordered w-full"
+                    placeholder="ชื่อผู้รับ"
+                  />
+                </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700">
-                เบอร์โทรผู้รับ
-              </label>
-              <input
-                className="input input-bordered w-full"
-                placeholder="เบอร์โทร"
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    เบอร์โทรผู้รับ
+                  </label>
+                  <input
+                    className="mt-1 input input-bordered w-full"
+                    placeholder="เบอร์โทร"
+                  />
+                </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700">
-                ที่อยู่จัดส่ง
-              </label>
-              <textarea
-                className="textarea textarea-bordered w-full"
-                rows={3}
-                placeholder="ที่อยู่ละเอียด + จุดสังเกต"
-              />
-            </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    ที่อยู่จัดส่ง
+                  </label>
+                  <textarea
+                    className="mt-1 textarea textarea-bordered w-full"
+                    placeholder="ที่อยู่ละเอียด + จุดสังเกต"
+                    rows={3}
+                  />
+                </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-gray-700">
-                ลิงก์แผนที่ (ถ้ามี)
-              </label>
-              <input
-                className="input input-bordered w-full"
-                placeholder="https://maps.google.com/..."
-              />
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    ลิงก์แผนที่ (ถ้ามี)
+                  </label>
+                  <input
+                    className="mt-1 input input-bordered w-full"
+                    placeholder="https://maps.google.com/..."
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}
