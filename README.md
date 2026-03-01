@@ -24,6 +24,11 @@ npm install @mantine/core @mantine/dates dayjs
 ```
 npm install uuid
 ```
+install Supabase client
+
+```
+npm i @supabase/supabase-js @supabase/ssr
+```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

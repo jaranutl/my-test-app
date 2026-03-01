@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
 import Link from "next/link";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const navItems = [
   { label: "ภาพรวมคำสั่งซื้อ", href: "/dashboard" },
@@ -16,45 +17,60 @@ const Navbar2 = () => {
 
   return (
     // <header className="w-full bg-[#4cddf0]">
-      <div className="mx-auto ">
-        {/* outer frame */}
-        <nav className="flex items-stretch justify-between border-black/20 bg-[#fbe29d]">
-          {/* left: logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 px-4 py-3 border-r border-black/20"
-          >
-            {/* โลโก้แบบ placeholder */}
-            <div className="h-9 w-9 rounded-full border border-black/20 bg-white/60" />
+    <div className="mx-auto ">
+      {/* outer frame */}
+      <nav className="flex items-stretch justify-between border-black/20 bg-[#fbe29d]">
+        {/* left: logo */}
+        <Link
+          href="/"
+          className="flex items-center gap-2 px-4 py-3 border-r border-black/20"
+        >
+          {/* โลโก้แบบ placeholder */}
+          {/* <div className="h-9 w-9 rounded-full border border-black/20 bg-white/60" />
             <div className="leading-tight">
-              <div className="text-sm font-semibold tracking-wide">Florist</div>
+              <div className="text-sm font-semibold tracking-wide">SweetPea</div>
+            </div> */}
+          <div className="flex items-center gap-3">
+            <Image
+              src="/logo.jpg"
+              alt="SweetPea Logo"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+
+            <div className="leading-tight">
+              <div className="text-lg font-bold tracking-wide">SweetPea</div>
+              <div className="text-xs text-black/60">
+                Florist & Handmade Bouquet
+              </div>
             </div>
-          </Link>
-          {/* middle: boxed menu */}
-          <div className="flex flex-1 items-stretch justify-end">
-            <ul className="flex items-stretch divide-x divide-black/20">
-              {navItems.map((item) => (
-                <li key={item.href} className="flex">
-                  <Link
-                    href={item.href}
-                    className={`flex items-center px-6 text-[14px] font-semibold tracking-wider ${
+          </div>
+        </Link>
+        {/* middle: boxed menu */}
+        <div className="flex flex-1 items-stretch justify-end">
+          <ul className="flex items-stretch divide-x divide-black/20">
+            {navItems.map((item) => (
+              <li key={item.href} className="flex">
+                <Link
+                  href={item.href}
+                  className={`flex items-center px-6 text-[14px] font-semibold tracking-wider ${
                     pathname === item.href
                       ? "bg-white/40 text-black border-b-2 border-black"
                       : "text-black/80"
                   }`}
-                    
-                  >
-                    {item.Icon && <item.Icon className="mr-2 text-sm" />}
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
-      </div>
+                >
+                  {item.Icon && <item.Icon className="mr-2 text-sm" />}
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
+    </div>
     // </header>
-  )
-}
+  );
+};
 
-export default Navbar2
+export default Navbar2;
