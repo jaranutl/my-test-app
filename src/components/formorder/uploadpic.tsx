@@ -8,6 +8,8 @@ export const UploadPic = () => {
             <div className="card bg-base-200 rounded-box grid h-auto place-items-center"><FileUploader/></div>
             <div className="divider"></div>
             <div className="card bg-base-200 rounded-box grid h-auto place-items-center"><FileUploaderActual/></div>
+            <button className="btn btn-soft btn-primary">บันทึกออเดอร์</button>
+            <button className="btn btn-soft btn-secondary">พิมพ์ใบออดเดอร์</button>
         </div>
     )
 }
