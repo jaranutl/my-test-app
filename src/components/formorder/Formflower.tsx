@@ -16,9 +16,19 @@ export const Formflower = () => {
   const [deliveryDate, setDeliveryDate] = useState<string | null>(null);
   const [deliveryTime, setDeliveryTime] = useState<string>("");
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [phone, setPhone] = useState<string>("");
 
   const handleToggle = (e: ChangeEvent<HTMLInputElement>) => {
     setIsVisible(e.target.checked);
+  };
+
+  const formatThaiPhone = (value: string): string => {
+    const cleaned = value.replace(/\D/g, "");
+    const limited = cleaned.slice(0, 10);
+    if (limited.length <= 3) return limited;
+    if (limited.length <= 6)
+      return `${limited.slice(0, 3)}-${limited.slice(3)}`;
+    return `${limited.slice(0, 3)}-${limited.slice(3, 6)}-${limited.slice(6)}`;
   };
 
   type Row = {
@@ -365,8 +375,12 @@ export const Formflower = () => {
                     เบอร์โทรผู้รับ
                   </label>
                   <input
+                    type="tel"
+                    inputMode="numeric"
+                    value={phone}
+                    onChange={(e) => setPhone(formatThaiPhone(e.target.value))}
+                    placeholder="xxx-xxx-xxxx"
                     className="mt-1 input input-bordered w-full"
-                    placeholder="เบอร์โทร"
                   />
                 </div>
 
@@ -388,6 +402,19 @@ export const Formflower = () => {
                   <input
                     className="mt-1 input input-bordered w-full"
                     placeholder="https://maps.google.com/..."
+                  />
+                </div>
+
+                {/* Price */}
+                <div className="flex flex-col gap-2 mb-4">
+                  <label className="block text-sm font-medium text-gray-700">
+                    ราคาค่าจัดส่ง
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    className="input input-bordered w-full max-w-xs"
+                    placeholder="กรอกจำนวนเงิน (บาท)"
                   />
                 </div>
               </div>
