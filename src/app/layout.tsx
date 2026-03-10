@@ -5,7 +5,6 @@ import Navbar from "@/components/navbar/Navbar";
 import Navbar2 from "@/components/navbar/Navbar2";
 import { Footer } from "@/components/footer/Footer";
 import Providers from "./providers";
-import type { Metadata } from "next";
 
 const notoSansThaiLooped = Noto_Sans_Thai_Looped({
   variable: "--font-noto-sans-thai-looped",
@@ -30,7 +29,7 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "SweetPea",
   icons: {
-    icon: "/logo.jpg",
+    icon: "/icon.png",
   },
 };
 

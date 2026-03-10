@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { DatePickerInput } from "@mantine/dates";
 import { Autocomplete } from "@mantine/core";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
-import { CheckBox } from "@mui/icons-material";
+import { api} from "@/lib/axios";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -16,6 +16,14 @@ export const Formflower = () => {
     const [deliveryDate, setDeliveryDate] = useState<Date | null>(null);
     const [deliveryTime, setDeliveryTime] = useState<string>("");
     const [isVisible, setIsVisible] = useState<boolean>(false);
+    const [flowerTypes, setFlowerTypes] = useState<string[]>([]);
+
+    useEffect(() => {
+        api.get("/api/gets/flowers").then((res) => {
+            const names = res.data.data.map((item: { name: string }) => item.name);
+            setFlowerTypes(names);
+        });
+    }, []);
 
     const handleToggle = (e: ChangeEvent<HTMLInputElement>) => {
         setIsVisible(e.target.checked);
@@ -91,12 +99,11 @@ export const Formflower = () => {
                             {rows.map((row, index) => (
                                 <tr key={row.id} className="hover:bg-gray-100">
                                     <th>{index + 1}</th>
-
                                     {/* ชนิดดอกไม้ */}
                                     <td>
                                         <Autocomplete
-                                            placeholder="เลือกหรือพิมพ์ชนิดดอกไม้"
-                                            data={["กุหลาบ", "ทานตะวัน", "ลิลลี่", "ไฮเดรนเยีย"]}
+                                            placeholder="เลือกชนิดดอกไม้"
+                                            data={flowerTypes}
                                             value={row.type}
                                             onChange={(value) => handleChange(row.id, "type", value)}
                                         />
@@ -105,7 +112,7 @@ export const Formflower = () => {
                                     {/* สี */}
                                     <td>
                                         <Autocomplete
-                                            placeholder="เลือกหรือพิมพ์สีดอกไม้"
+                                            placeholder="เลือกสีดอกไม้"
                                             data={["แดง", "ขาว", "ชมพู", "เหลือง"]}
                                             value={row.color}
                                             onChange={(value) => handleChange(row.id, "color", value)}
