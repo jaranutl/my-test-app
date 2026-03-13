@@ -25,6 +25,25 @@ export const Formflower = () => {
         });
     }, []);
 
+    const [roseColors, setRoseColors] = useState<string[]>([]);
+
+    useEffect(() => {
+        api.get("/api/gets/rose_colors").then((res) => {
+            const colors = res.data.data.map((item: { color: string }) => item.color);
+            setRoseColors(colors);
+        });
+    }, []);
+
+    const [lilyColors, setLilyColors] = useState<string[]>([]);
+
+    useEffect(() => {
+        api.get("/api/gets/lily_colors").then((res) => {
+            const colors = res.data.data.map((item: { color: string }) => item.color);
+            setLilyColors(colors);
+        }
+        );
+    }, []);
+
     const handleToggle = (e: ChangeEvent<HTMLInputElement>) => {
         setIsVisible(e.target.checked);
     };
@@ -42,10 +61,7 @@ export const Formflower = () => {
 
     const MAX_ROWS = 4;
 
-    const [warning, setWarning] = useState<string | null>(null);
-
     const addRow = () => {
-        const lastRow = rows[rows.length - 1];
         setRows((prev) => [
             ...prev,
             {
@@ -70,11 +86,29 @@ export const Formflower = () => {
         setRows((prev) =>
             prev.map((row) => (row.id === id ? { ...row, [field]: value } : row)),
         );
+
+        // reset color when flower type changes, auto-select first color if available
+        if (field === "type") {
+            let defaultColor = "";
+            if (value === "กุหลาบ" && roseColors.length > 0) defaultColor = roseColors[0];
+            else if (value === "ลิลลี่" && lilyColors.length > 0) defaultColor = lilyColors[0];
+            setRows((prev) =>
+                prev.map((row) =>
+                    row.id === id ? { ...row, color: defaultColor } : row
+                )
+            );
+        }
+
     };
 
+    const FLOWER_TYPES_WITH_COLORS = ["กุหลาบ", "ลิลลี่"];
+
     const isRowValid = (row: Row) => {
+        const requiresColor = FLOWER_TYPES_WITH_COLORS.includes(row.type);
         return (
-            row.type.trim() !== "" && row.color.trim() !== "" && row.quantity >= 1
+            row.type.trim() !== "" &&
+            (!requiresColor || row.color.trim() !== "") &&
+            row.quantity >= 1
         );
     };
 
@@ -101,22 +135,44 @@ export const Formflower = () => {
                                     <th>{index + 1}</th>
                                     {/* ชนิดดอกไม้ */}
                                     <td>
-                                        <Autocomplete
-                                            placeholder="เลือกชนิดดอกไม้"
-                                            data={flowerTypes}
-                                            value={row.type}
-                                            onChange={(value) => handleChange(row.id, "type", value)}
-                                        />
+                                        <select
+                                            className="select"
+                                            value={row.type || ""}
+                                            onChange={(e) => handleChange(row.id, "type", e.target.value)}
+                                        >
+                                            <option value="" disabled>เลือกชนิดดอกไม้</option>
+                                            {flowerTypes.map((type) => (
+                                                <option key={type} value={type}>
+                                                    {type}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </td>
-
                                     {/* สี */}
                                     <td>
-                                        <Autocomplete
-                                            placeholder="เลือกสีดอกไม้"
-                                            data={["แดง", "ขาว", "ชมพู", "เหลือง"]}
-                                            value={row.color}
-                                            onChange={(value) => handleChange(row.id, "color", value)}
-                                        />
+                                        <select className="select"
+                                            value={row.color }
+                                            onChange={(e) => handleChange(row.id, "color", e.target.value)}
+                                        >
+                                            <option value=" " disabled>เลือกสีดอกไม้</option>
+                                            {row.type === "กุหลาบ" ? (
+                                                roseColors.map((color) => (
+                                                    <option key={color} value={color}>
+                                                        {color}
+                                                    </option>
+                                                ))
+                                            ) : row.type === "ลิลลี่" ? (
+                                                lilyColors.map((color) => (
+                                                    <option key={color} value={color}>
+                                                        {color}
+                                                    </option>
+                                                ))
+                                            ) : (
+                                                <option value="เลือกสีไม่ได้">
+                                                    เลือกสีดอกไม้
+                                                </option>
+                                            )}
+                                        </select>
                                     </td>
 
                                     {/* จำนวน + ปุ่มลบ */}
@@ -220,7 +276,6 @@ export const Formflower = () => {
                             >
                                 เขียนการ์ดอวยพร
                             </label>
-
                             <span className="label text-sm">(ไม่บังคับ)</span>
                         </div>
                         {isVisible && (

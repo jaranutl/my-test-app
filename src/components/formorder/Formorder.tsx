@@ -45,6 +45,7 @@ export const Formorder = () => {
           </label>
           <input
             type="text"
+            required
             value={lineName}
             onChange={(e) => setLineName(e.target.value)}
             className="mt-1 input input-bordered w-auto"
@@ -59,14 +60,18 @@ export const Formorder = () => {
 
           <input
             type="tel"
+            className="mt-1 input validator tabular-nums input-bordered w-full max-w-xs"
             inputMode="numeric"
+            required
             value={phone}
             onChange={(e) =>
               setPhone(formatThaiPhone(e.target.value))
             }
             placeholder="xxx-xxx-xxxx"
-            className="mt-1 input input-bordered w-full max-w-xs"
+            maxLength={12}
+            title="Must be 10 digits"
           />
+          <p className="validator-hint">กรอกเบอร์โทรศัพท์ 10 หลัก</p>
         </div>
       </div>
 
