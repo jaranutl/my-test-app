@@ -111,7 +111,7 @@ export default function FileUploaderActual() {
           </svg>
 
           <p className="text-sm text-gray-600 font-medium">
-            {isDragging ? "Drop your image here" : "Drag & drop, click, or paste (Ctrl+V / ⌘V)"}
+            {isDragging ? "Drop your image here" : "Drag & drop, click, or paste (Ctrl+V / ⌘+V)"}
           </p>
           <p className="text-xs text-gray-400">PNG, JPG, GIF, WEBP up to 10MB</p>
 

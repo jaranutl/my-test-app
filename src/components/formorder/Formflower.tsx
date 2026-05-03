@@ -202,7 +202,7 @@ export const Formflower = () => {
                                                         : "btn-error text-white"
                                                     }`}
                                             >
-                                                -
+                                                X
                                             </button>
                                         </div>
                                     </td>
@@ -307,7 +307,7 @@ export const Formflower = () => {
                         <label className="inline-flex items-center cursor-pointer">
                             <input
                                 type="radio"
-                                value="workin"
+                                value="pickup"
                                 name="pickup"
                                 className="radio radio-primary radio-md"
                                 checked={pickupMode === "workin"}
@@ -320,7 +320,7 @@ export const Formflower = () => {
                             <input
                                 type="radio"
                                 value="delivery"
-                                name="pickup"
+                                name="delivery"
                                 className="radio radio-primary radio-md"
                                 checked={pickupMode === "delivery"}
                                 onChange={() => setPickupMode("delivery")}

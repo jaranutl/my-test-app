@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Thai_Looped } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar/Navbar";
 import Navbar2 from "@/components/navbar/Navbar2";
 import { Footer } from "@/components/footer/Footer";
-import Providers from "./providers";
+import Providers from "@/components/Providers"
 
 const notoSansThaiLooped = Noto_Sans_Thai_Looped({
   variable: "--font-noto-sans-thai-looped",

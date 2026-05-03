@@ -78,7 +78,7 @@ export default function FileUploaderActual() {
 
   return (
     <div className="w-auto max-w-md flex flex-col items-center gap-6 mb-5">
-      <h2 className="text-xl font-semibold text-gray-800 text-center">ช่อที่จัดเสร็จแล้ว</h2>
+      <h2 className="text-xl font-semibold text-gray-800 text-center">ช่อตัวอย่าง</h2>
 
       {/* Drop Zone */}
       {!preview && (
@@ -111,7 +111,7 @@ export default function FileUploaderActual() {
           </svg>
 
           <p className="text-sm text-gray-600 font-medium">
-            {isDragging ? "Drop your image here" : "Drag & drop, click, or paste (Ctrl+V / ⌘V)"}
+            {isDragging ? "Drop your image here" : "Drag & drop, click, or paste (Ctrl+V / ⌘+V)"}
           </p>
           <p className="text-xs text-gray-400">PNG, JPG, GIF, WEBP up to 10MB</p>
 

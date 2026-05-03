@@ -48,9 +48,10 @@ export const Formorder = () => {
             required
             value={lineName}
             onChange={(e) => setLineName(e.target.value)}
-            className="mt-1 input input-bordered w-auto"
+            className="mt-1 input validator input-bordered w-auto"
             placeholder="กรอกชื่อ LINE ลูกค้า"
           />
+          <p className="validator-hint">กรุณากรอกชื่อ LINE ของลูกค้า</p>
         </div>
 
         <div>
