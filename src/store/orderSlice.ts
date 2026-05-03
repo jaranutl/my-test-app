@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { v4 as uuidv4 } from "uuid"
 
 type OrderRow = { id: string; type: string; color: string; quantity: number }
+
+const initialRow: OrderRow = { id: uuidv4(), type: "", color: "", quantity: 1 }
 
 const orderSlice = createSlice({
     name: "order",
     initialState: {
         lineName: "", phone: "", orderNo: "",
         flowerPrice: 0, deliveryDate: null as string | null, deliveryTime: "",
-        rows: [{ id: "", type: "", color: "", quantity: 0 }] as OrderRow[],
+        rows: [initialRow] as OrderRow[],
         paperColor: "",
         bowColor: "",
-        pickUpMode: "",
+        pickUpMode: "walkin",
         actualFlowerPic: "",
         exampleFlowerPic: "",
         cardText: "",
@@ -44,8 +47,8 @@ const orderSlice = createSlice({
         resetOrder:         (state) => {
             state.lineName = ""; state.phone = ""; state.orderNo = "";
             state.flowerPrice = 0; state.deliveryDate = null; state.deliveryTime = "";
-            state.rows = [{ id: "", type: "", color: "", quantity: 0 }];
-            state.paperColor = ""; state.bowColor = ""; state.pickUpMode = "";
+            state.rows = [{ id: uuidv4(), type: "", color: "", quantity: 1 }];
+            state.paperColor = ""; state.bowColor = ""; state.pickUpMode = "walkin";
             state.actualFlowerPic = ""; state.exampleFlowerPic = "";
             state.cardText = ""; state.deliverType = ""; state.totalPrice = 0;
             state.receiverName = ""; state.receiverPhone = "";

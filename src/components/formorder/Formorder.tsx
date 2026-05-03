@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
 import { Formflower } from "./Formflower";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setLineName, setOrderNo, setPhone } from "@/store/orderSlice";
 
 export const Formorder = () => {
-  const [lineName, setLineName] = useState("");
-  const [orderNo, setOrderNo] = useState("");
-  const [phone, setPhone] = useState("");
+  const dispatch = useAppDispatch();
+  const lineName = useAppSelector((s) => s.order.lineName);
+  const orderNo = useAppSelector((s) => s.order.orderNo);
+  const phone = useAppSelector((s) => s.order.phone);
 
   const formatThaiPhone = (value: string) => {
     const digits = value.replace(/\D/g, "").slice(0, 10);
@@ -32,7 +34,6 @@ export const Formorder = () => {
           <input
             type="text"
             value={orderNo}
-            onChange={(e) => setOrderNo(e.target.value)}
             className="mt-1 input input-bordered w-auto"
           />
         </div>
@@ -47,7 +48,7 @@ export const Formorder = () => {
             type="text"
             required
             value={lineName}
-            onChange={(e) => setLineName(e.target.value)}
+            onChange={(e) => dispatch(setLineName(e.target.value))}
             className="mt-1 input validator input-bordered w-auto"
             placeholder="กรอกชื่อ LINE ลูกค้า"
           />
@@ -65,9 +66,7 @@ export const Formorder = () => {
             inputMode="numeric"
             required
             value={phone}
-            onChange={(e) =>
-              setPhone(formatThaiPhone(e.target.value))
-            }
+            onChange={(e) => dispatch(setPhone(formatThaiPhone(e.target.value)))}
             placeholder="xxx-xxx-xxxx"
             maxLength={12}
             title="Must be 10 digits"
