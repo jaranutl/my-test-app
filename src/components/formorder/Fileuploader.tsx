@@ -1,6 +1,19 @@
 import { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
 
-export default function FileUploaderActual() {
+export type UploadedImage = {
+  src: string;
+  fileName: string;
+};
+
+type FileUploaderProps = {
+  onImageChange?: (image: UploadedImage | null) => void;
+  resetToken?: number;
+};
+
+export default function FileUploader({
+  onImageChange,
+  resetToken,
+}: FileUploaderProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [fileName, setFileName] = useState<string>("");
@@ -8,10 +21,17 @@ export default function FileUploaderActual() {
   const dropRef = useRef<HTMLDivElement>(null);
 
   const handleFile = (file: File) => {
-    if (!file.type.startsWith("image/")) return alert("Please upload an image file.");
+    if (!file.type.startsWith("image/"))
+      return alert("Please upload an image file.");
     setFileName(file.name || "pasted-image.png");
     const reader = new FileReader();
-    reader.onload = () => setPreview(reader.result as string);
+    reader.onload = () => {
+      const src = reader.result as string;
+      const nextFileName = file.name || "pasted-image.png";
+
+      setPreview(src);
+      onImageChange?.({ src, fileName: nextFileName });
+    };
     reader.readAsDataURL(file);
   };
 
@@ -71,14 +91,25 @@ export default function FileUploaderActual() {
   const onRemove = () => {
     setPreview(null);
     setFileName("");
+    onImageChange?.(null);
     if (inputRef.current) inputRef.current.value = "";
     // โฟกัสกลับไปที่ dropzone เพื่อ paste ต่อได้ทันที
     dropRef.current?.focus();
   };
 
+  useEffect(() => {
+    if (resetToken === undefined) return;
+    setPreview(null);
+    setFileName("");
+    onImageChange?.(null);
+    if (inputRef.current) inputRef.current.value = "";
+  }, [onImageChange, resetToken]);
+
   return (
     <div className="w-auto max-w-md flex flex-col items-center gap-6 mb-5">
-      <h2 className="text-xl font-semibold text-gray-800 text-center">ช่อที่จัดเสร็จแล้ว</h2>
+      <h2 className="text-xl font-semibold text-gray-800 text-center">
+        รูปตัวอย่าง
+      </h2>
 
       {/* Drop Zone */}
       {!preview && (
@@ -107,24 +138,44 @@ export default function FileUploaderActual() {
             strokeWidth={1.5}
             viewBox="0 0 24 24"
           >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
+            />
           </svg>
 
           <p className="text-sm text-gray-600 font-medium">
-            {isDragging ? "Drop your image here" : "Drag & drop, click, or paste (Ctrl+V / ⌘V)"}
+            {isDragging
+              ? "Drop your image here"
+              : "Drag & drop, click, or paste (Ctrl+V / ⌘V)"}
           </p>
-          <p className="text-xs text-gray-400">PNG, JPG, GIF, WEBP up to 10MB</p>
+          <p className="text-xs text-gray-400">
+            PNG, JPG, GIF, WEBP up to 10MB
+          </p>
 
-          <input ref={inputRef} type="file" accept="image/*" onChange={onChange} className="hidden" />
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/*"
+            onChange={onChange}
+            className="hidden"
+          />
         </div>
       )}
 
       {/* Preview */}
       {preview && (
         <div className="relative rounded-2xl overflow-hidden border border-gray-200 shadow-sm bg-white">
-          <img src={preview} alt="Preview" className="w-full max-h-72 object-contain" />
+          <img
+            src={preview}
+            alt="Preview"
+            className="w-full max-h-72 object-contain"
+          />
           <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm px-4 py-2 flex items-center justify-between">
-            <span className="text-white text-xs truncate max-w-[75%]">{fileName}</span>
+            <span className="text-white text-xs truncate max-w-[75%]">
+              {fileName}
+            </span>
             <button
               onClick={onRemove}
               className="text-white text-xs font-medium bg-red-500 hover:bg-red-600 px-3 py-1 rounded-full transition-colors"
