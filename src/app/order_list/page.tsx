@@ -12,6 +12,7 @@ import { OrderListSummaryCards } from "@/components/orderlist/OrderListSummaryCa
 import { OrderListTimeline } from "@/components/orderlist/OrderListTimeline";
 import { OrderListPagination } from "@/components/orderlist/OrderListPagination";
 import { OrderListThemeToggle } from "@/components/orderlist/OrderListThemeToggle";
+import { OrderListQuickFilters } from "@/components/orderlist/OrderListQuickFilters";
 
 type OrderListPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -113,6 +114,8 @@ export default async function OrderListPage({ searchParams }: OrderListPageProps
       {error && <p className="mb-4 text-sm font-medium text-red-600">{error.message}</p>}
 
       <OrderListSummaryCards orders={orders} />
+
+      <OrderListQuickFilters searchParams={params} />
 
       <OrderListTimeline orders={orders} />
 
