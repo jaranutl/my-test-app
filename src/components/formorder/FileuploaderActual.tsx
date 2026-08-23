@@ -8,15 +8,17 @@ export type UploadedImage = {
 type FileUploaderActualProps = {
   onImageChange?: (image: UploadedImage | null) => void;
   resetToken?: number;
+  initialImage?: UploadedImage | null;
 };
 
 export default function FileUploaderActual({
   onImageChange,
   resetToken,
+  initialImage,
 }: FileUploaderActualProps) {
-  const [preview, setPreview] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(initialImage?.src ?? null);
   const [isDragging, setIsDragging] = useState(false);
-  const [fileName, setFileName] = useState<string>("");
+  const [fileName, setFileName] = useState<string>(initialImage?.fileName ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
   const dropRef = useRef<HTMLDivElement>(null);
 
