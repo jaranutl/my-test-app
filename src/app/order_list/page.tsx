@@ -44,15 +44,16 @@ export default async function OrderListPage({ searchParams }: OrderListPageProps
   let query = supabase
     .from("order")
     .select(ORDER_SELECT, { count: "exact" })
-    .order("delivery_date", { ascending: true, nullsFirst: false })
+    .order("delivery_date", { ascending: false, nullsFirst: false })
     .order("delivery_time", { ascending: true, nullsFirst: false })
     .order("order_no", { ascending: false });
 
   const trimmedQuery = params.q?.trim();
   if (trimmedQuery) {
-    // Order numbers are short (shop volume won't reach 7 digits); anything
-    // longer numeric is a phone number, not an order lookup.
-    if (/^\d{1,6}$/.test(trimmedQuery)) {
+    // Order numbers are short (shop volume won't reach 7 digits) and never
+    // start with 0; Thai mobile numbers always do, so a leading zero routes
+    // to the name/phone search below instead of an order_no lookup.
+    if (/^[1-9]\d{0,5}$/.test(trimmedQuery)) {
       query = query.eq("order_no", Number(trimmedQuery));
     } else {
       const safeQuery = sanitizeForOrFilter(trimmedQuery);

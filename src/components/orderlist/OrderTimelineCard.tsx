@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Store, Truck } from "lucide-react";
 import { getStatusStep } from "@/lib/orderStatus";
@@ -19,13 +20,18 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
   const step = getStatusStep(order.status);
   const { total } = getOrderTotal(order);
   const href = `/order_list/${order.id}`;
-  // Computed client-side (this is a client component) so "overdue" reflects
-  // the viewer's own clock/timezone, not the server's.
+  // This component is still server-rendered on first paint even though it's
+  // "use client" — `now` starts null so the initial (server) HTML never shows
+  // the badge, avoiding both a server-timezone-skewed value and a hydration
+  // mismatch. It's filled in once mounted, using only the viewer's clock.
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => setNow(new Date()), []);
   const isOverdue = Boolean(
-    order.delivery_date &&
+    now &&
+      order.delivery_date &&
       order.delivery_time &&
       order.status !== "delivered" &&
-      new Date(`${order.delivery_date}T${order.delivery_time}`) < new Date(),
+      new Date(`${order.delivery_date}T${order.delivery_time}`) < now,
   );
 
   const openDetail = () => router.push(href);

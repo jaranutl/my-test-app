@@ -8,8 +8,15 @@ type OrderListTimelineProps = {
 
 const UNSCHEDULED_KEY = "__unscheduled__";
 
-const formatDateHeading = (value: string) =>
-  new Intl.DateTimeFormat("th-TH", { weekday: "long", day: "numeric", month: "long" }).format(new Date(value));
+const formatDateHeading = (value: string) => {
+  // Construct from local date parts, not `new Date("YYYY-MM-DD")` — the
+  // latter parses as UTC midnight and can render as the wrong day once
+  // formatted in a timezone with a negative UTC offset.
+  const [year, month, day] = value.split("-").map(Number);
+  return new Intl.DateTimeFormat("th-TH", { weekday: "long", day: "numeric", month: "long" }).format(
+    new Date(year, month - 1, day),
+  );
+};
 
 export const OrderListTimeline = ({ orders }: OrderListTimelineProps) => {
   if (orders.length === 0) {
@@ -31,7 +38,7 @@ export const OrderListTimeline = ({ orders }: OrderListTimelineProps) => {
   const sortedKeys = Array.from(groups.keys()).sort((a, b) => {
     if (a === UNSCHEDULED_KEY) return 1;
     if (b === UNSCHEDULED_KEY) return -1;
-    return a.localeCompare(b);
+    return b.localeCompare(a);
   });
 
   return (
