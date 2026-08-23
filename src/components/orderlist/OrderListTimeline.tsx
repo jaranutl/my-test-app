@@ -1,4 +1,4 @@
-import { Store, Truck } from "lucide-react";
+import { CalendarDays, Store, Truck } from "lucide-react";
 import type { OrderRecord } from "./types";
 import { OrderTimelineCard } from "./OrderTimelineCard";
 
@@ -42,7 +42,7 @@ export const OrderListTimeline = ({ orders }: OrderListTimelineProps) => {
   });
 
   return (
-    <div className="space-y-6">
+    <section className="mt-4 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm dark:border-white/10 dark:bg-[#1a211c]">
       {sortedKeys.map((key) => {
         const groupOrders = [...(groups.get(key) ?? [])].sort((a, b) => {
           if (!a.delivery_time) return 1;
@@ -51,38 +51,41 @@ export const OrderListTimeline = ({ orders }: OrderListTimelineProps) => {
         });
 
         return (
-          <section key={key}>
-            <div className="mb-3 flex items-baseline gap-2">
-              <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100">
-                {key === UNSCHEDULED_KEY ? "ยังไม่ระบุวันนัด" : formatDateHeading(key)}
-              </h3>
-              <span className="text-xs text-stone-400">
-                {groupOrders.length} รายการ
-                {key !== UNSCHEDULED_KEY && " · เรียงตามเวลานัดรับ"}
-              </span>
+          <div key={key}>
+            <div className="flex items-center justify-between border-y border-stone-100 bg-stone-50 px-4 py-3 first:border-t-0 dark:border-white/8 dark:bg-white/5 sm:px-5">
+              <div className="flex items-center gap-2">
+                <CalendarDays size={15} className="text-[#d34f77]" />
+                <b className="text-sm text-stone-800 dark:text-stone-100">
+                  {key === UNSCHEDULED_KEY ? "ยังไม่ระบุวันนัด" : formatDateHeading(key)}
+                </b>
+                <span className="text-xs text-stone-400">{groupOrders.length} ออเดอร์</span>
+              </div>
+              {key !== UNSCHEDULED_KEY && <span className="text-xs text-stone-400">เรียงตามเวลานัดรับ</span>}
             </div>
 
-            <ol className="relative space-y-3 border-l-2 border-stone-200 pl-5 dark:border-white/10">
-              {groupOrders.map((order) => (
-                <li key={order.id} className="relative">
-                  <span
-                    className={`absolute -left-[27px] top-3 grid size-5 place-items-center rounded-full ring-4 ring-[#faf9f7] dark:ring-[#121713] ${
-                      order.pickup_mode === "delivery" ? "bg-amber-500" : "bg-[#dd5f83]"
-                    }`}
-                  >
-                    {order.pickup_mode === "delivery" ? (
-                      <Truck size={11} className="text-white" />
-                    ) : (
-                      <Store size={11} className="text-white" />
-                    )}
-                  </span>
-                  <OrderTimelineCard order={order} />
-                </li>
-              ))}
-            </ol>
-          </section>
+            <div className="relative px-4 before:absolute before:bottom-6 before:left-[27px] before:top-6 before:w-px before:bg-stone-200 dark:before:bg-white/10 sm:px-5">
+              <ol className="space-y-3 py-3">
+                {groupOrders.map((order) => (
+                  <li key={order.id} className="relative pl-5">
+                    <span
+                      className={`absolute -left-[1px] top-3 grid size-5 place-items-center rounded-full ring-4 ring-white dark:ring-[#1a211c] ${
+                        order.pickup_mode === "delivery" ? "bg-amber-500" : "bg-[#dd5f83]"
+                      }`}
+                    >
+                      {order.pickup_mode === "delivery" ? (
+                        <Truck size={11} className="text-white" />
+                      ) : (
+                        <Store size={11} className="text-white" />
+                      )}
+                    </span>
+                    <OrderTimelineCard order={order} />
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         );
       })}
-    </div>
+    </section>
   );
 };
