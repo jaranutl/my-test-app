@@ -1,5 +1,5 @@
 import type { OrderStatus } from "@/lib/orderStatus";
-import type { PickupMode } from "@/components/formorder/Formflower";
+import type { PickupMode } from "@/components/formorder/types";
 
 export type OrderItem = {
   lineNo?: number;
