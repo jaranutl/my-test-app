@@ -134,14 +134,8 @@ export const DashboardPage = () => {
   return (
     <div className={`dashboard-theme min-h-screen p-4 ${isDark ? "dark bg-[#121713]" : "bg-[#faf9f7]"}`}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100">ภาพรวมคำสั่งซื้อ</h2>
+        <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">ภาพรวมคำสั่งซื้อ</h2>
         <div className="flex items-center gap-2">
-          <Link
-            href="/order_form"
-            className="flex items-center gap-2 rounded-xl bg-[#dd5f83] px-4 py-2 text-sm font-semibold text-white hover:bg-[#ca5277]"
-          >
-            <CirclePlus size={16} /> เพิ่มออเดอร์
-          </Link>
           <button
             type="button"
             onClick={() => setIsDark((current) => !current)}
@@ -150,6 +144,21 @@ export const DashboardPage = () => {
           >
             {isDark ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          <Link
+            href="/order_form"
+            className="flex items-center gap-2 rounded-xl bg-[#dd5f83] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#ca5277]"
+          >
+            <CirclePlus size={16} /> เพิ่มออเดอร์
+          </Link>
+        </div>
+      </div>
+
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-sm text-stone-500 dark:text-stone-400">Daily command center</p>
+          <h2 className="mt-1 text-2xl font-semibold text-stone-800 dark:text-stone-100">
+            {orders.length} ออเดอร์กำลังดำเนินการ
+          </h2>
         </div>
       </div>
 
