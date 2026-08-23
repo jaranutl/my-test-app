@@ -47,7 +47,7 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
           openDetail();
         }
       }}
-      className="grid cursor-pointer grid-cols-1 gap-2 rounded-2xl border border-stone-200 bg-white p-4 transition hover:border-rose-200 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-300 dark:border-white/10 dark:bg-[#1a211c] sm:grid-cols-[64px_1fr_auto_auto_auto_20px] sm:items-center"
+      className="grid min-w-0 cursor-pointer grid-cols-1 gap-3 rounded-xl border border-stone-100 bg-stone-50/70 p-4 outline-none transition hover:border-rose-200 focus-visible:ring-2 focus-visible:ring-[#dd5f83] dark:border-white/8 dark:bg-white/5 md:grid-cols-[64px_72px_minmax(0,1fr)_105px_90px_120px_20px] md:items-center"
     >
       <span className="text-xs font-semibold tabular-nums text-stone-500 dark:text-stone-400">
         {order.delivery_time ? `${order.delivery_time} น.` : "-"}
@@ -58,9 +58,11 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
         )}
       </span>
 
+      <b className="text-sm text-stone-800 dark:text-stone-100">#{order.order_no ?? order.id}</b>
+
       <span className="min-w-0">
-        <span className="block truncate text-sm font-semibold text-stone-800 dark:text-stone-100">
-          #{order.order_no ?? order.id} · {order.customer?.line_name || "-"}
+        <span className="block truncate text-sm font-medium text-stone-800 dark:text-stone-100">
+          {order.customer?.line_name || "-"}
         </span>
         {order.customer?.phone ? (
           <a
@@ -75,18 +77,16 @@ export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
         )}
       </span>
 
-      <span className="flex items-center gap-1.5 text-xs text-stone-600 dark:text-stone-300">
-        {isDelivery ? <Truck size={13} /> : <Store size={13} />}
+      <span className="flex items-center gap-1.5 text-sm text-stone-600 dark:text-stone-300">
+        {isDelivery ? <Truck size={14} /> : <Store size={14} />}
         {isDelivery ? "จัดส่ง" : "รับที่ร้าน"}
       </span>
 
-      <span className="text-sm font-semibold tabular-nums text-stone-800 dark:text-stone-100">
-        ฿{formatMoney(total)}
-      </span>
+      <b className="text-sm tabular-nums text-stone-800 dark:text-stone-100">฿{formatMoney(total)}</b>
 
-      {step && <span className={`badge ${step.badgeClass} w-24 justify-center text-white`}>{step.label}</span>}
+      {step && <span className={`badge ${step.badgeClass} w-full justify-center text-white`}>{step.label}</span>}
 
-      <ChevronRight size={16} className="hidden text-stone-300 sm:block dark:text-white/20" />
+      <ChevronRight size={16} className="hidden text-stone-300 md:block dark:text-white/20" />
     </div>
   );
 };
