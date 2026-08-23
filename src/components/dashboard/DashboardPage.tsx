@@ -93,8 +93,8 @@ export const DashboardPage = () => {
         .select(
           "id, order_no, status, bouquet_price, delivery_date, delivery_time, pickup_mode, customer:customer_id(line_name, phone), delivery_info(delivery_price)",
         )
-        .gte("created_at", range.start.toISOString())
-        .lte("created_at", range.end.toISOString())
+        .gte("delivery_date", toDateParam(range.start))
+        .lte("delivery_date", toDateParam(range.end))
         .returns<DashboardOrderRow[]>();
 
       if (!isMounted) return;

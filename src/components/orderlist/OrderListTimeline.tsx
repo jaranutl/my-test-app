@@ -34,8 +34,6 @@ export const OrderListTimeline = ({ orders }: OrderListTimelineProps) => {
     return a.localeCompare(b);
   });
 
-  const now = new Date();
-
   return (
     <div className="space-y-6">
       {sortedKeys.map((key) => {
@@ -58,31 +56,22 @@ export const OrderListTimeline = ({ orders }: OrderListTimelineProps) => {
             </div>
 
             <ol className="relative space-y-3 border-l-2 border-stone-200 pl-5 dark:border-white/10">
-              {groupOrders.map((order) => {
-                const isOverdue = Boolean(
-                  key !== UNSCHEDULED_KEY &&
-                    order.delivery_time &&
-                    order.status !== "delivered" &&
-                    new Date(`${key}T${order.delivery_time}`) < now,
-                );
-
-                return (
-                  <li key={order.id} className="relative">
-                    <span
-                      className={`absolute -left-[27px] top-3 grid size-5 place-items-center rounded-full ring-4 ring-[#faf9f7] dark:ring-[#121713] ${
-                        order.pickup_mode === "delivery" ? "bg-amber-500" : "bg-[#dd5f83]"
-                      }`}
-                    >
-                      {order.pickup_mode === "delivery" ? (
-                        <Truck size={11} className="text-white" />
-                      ) : (
-                        <Store size={11} className="text-white" />
-                      )}
-                    </span>
-                    <OrderTimelineCard order={order} isOverdue={isOverdue} />
-                  </li>
-                );
-              })}
+              {groupOrders.map((order) => (
+                <li key={order.id} className="relative">
+                  <span
+                    className={`absolute -left-[27px] top-3 grid size-5 place-items-center rounded-full ring-4 ring-[#faf9f7] dark:ring-[#121713] ${
+                      order.pickup_mode === "delivery" ? "bg-amber-500" : "bg-[#dd5f83]"
+                    }`}
+                  >
+                    {order.pickup_mode === "delivery" ? (
+                      <Truck size={11} className="text-white" />
+                    ) : (
+                      <Store size={11} className="text-white" />
+                    )}
+                  </span>
+                  <OrderTimelineCard order={order} />
+                </li>
+              ))}
             </ol>
           </section>
         );

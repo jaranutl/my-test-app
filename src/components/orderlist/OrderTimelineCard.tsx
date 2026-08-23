@@ -8,18 +8,25 @@ import { getOrderTotal } from "./types";
 
 type OrderTimelineCardProps = {
   order: OrderRecord;
-  isOverdue: boolean;
 };
 
 const formatMoney = (value: number) =>
   new Intl.NumberFormat("th-TH", { maximumFractionDigits: 2 }).format(value);
 
-export const OrderTimelineCard = ({ order, isOverdue }: OrderTimelineCardProps) => {
+export const OrderTimelineCard = ({ order }: OrderTimelineCardProps) => {
   const router = useRouter();
   const isDelivery = order.pickup_mode === "delivery";
   const step = getStatusStep(order.status);
   const { total } = getOrderTotal(order);
   const href = `/order_list/${order.id}`;
+  // Computed client-side (this is a client component) so "overdue" reflects
+  // the viewer's own clock/timezone, not the server's.
+  const isOverdue = Boolean(
+    order.delivery_date &&
+      order.delivery_time &&
+      order.status !== "delivered" &&
+      new Date(`${order.delivery_date}T${order.delivery_time}`) < new Date(),
+  );
 
   const openDetail = () => router.push(href);
 

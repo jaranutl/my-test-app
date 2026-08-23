@@ -20,6 +20,12 @@ type OrderListPageProps = {
 const asString = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] : value;
 
+// PostgREST's .or() filter string breaks on unescaped commas/parens; ilike
+// patterns treat % and _ as wildcards. Strip/escape both before interpolating
+// user input into the query.
+const sanitizeForOrFilter = (value: string) =>
+  value.replace(/[,()]/g, "").replace(/[%_\\]/g, (match) => `\\${match}`);
+
 export default async function OrderListPage({ searchParams }: OrderListPageProps) {
   const rawParams = await searchParams;
   const params: OrderListSearchParams = {
@@ -38,14 +44,19 @@ export default async function OrderListPage({ searchParams }: OrderListPageProps
   let query = supabase
     .from("order")
     .select(ORDER_SELECT, { count: "exact" })
+    .order("delivery_date", { ascending: true, nullsFirst: false })
+    .order("delivery_time", { ascending: true, nullsFirst: false })
     .order("order_no", { ascending: false });
 
   const trimmedQuery = params.q?.trim();
   if (trimmedQuery) {
-    if (/^\d+$/.test(trimmedQuery)) {
+    // Order numbers are short (shop volume won't reach 7 digits); anything
+    // longer numeric is a phone number, not an order lookup.
+    if (/^\d{1,6}$/.test(trimmedQuery)) {
       query = query.eq("order_no", Number(trimmedQuery));
     } else {
-      query = query.or(`line_name.ilike.%${trimmedQuery}%,phone.ilike.%${trimmedQuery}%`, {
+      const safeQuery = sanitizeForOrFilter(trimmedQuery);
+      query = query.or(`line_name.ilike.%${safeQuery}%,phone.ilike.%${safeQuery}%`, {
         foreignTable: "customer",
       });
     }

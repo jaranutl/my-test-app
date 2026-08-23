@@ -56,6 +56,15 @@ export const OrderListFilterBar = ({ searchParams }: OrderListFilterBarProps) =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
+  // Keep the search box in sync when the URL changes from outside typing
+  // (Back/Forward navigation, a chip removal, "ล้างตัวกรอง") — otherwise the
+  // debounce effect above sees a stale local `query` and re-pushes the old
+  // value right back onto the URL, fighting Back navigation.
+  useEffect(() => {
+    setQuery(searchParams.q ?? "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.q]);
+
   const removeChip = (key: ChipKey) => {
     if (key === "deliveryDate") pushParams({ deliveryDate: undefined });
     if (key === "pickupMode") pushParams({ pickupMode: undefined });
@@ -104,13 +113,13 @@ export const OrderListFilterBar = ({ searchParams }: OrderListFilterBarProps) =>
 
         <input
           type="date"
-          defaultValue={searchParams.deliveryDate ?? ""}
+          value={searchParams.deliveryDate ?? ""}
           onChange={(e) => pushParams({ deliveryDate: e.target.value })}
           className="input input-bordered input-sm dark:border-white/10 dark:bg-white/5"
         />
 
         <select
-          defaultValue={searchParams.pickupMode ?? "all"}
+          value={searchParams.pickupMode ?? "all"}
           onChange={(e) => pushParams({ pickupMode: e.target.value })}
           className="select select-bordered select-sm dark:border-white/10 dark:bg-white/5"
         >
@@ -122,7 +131,7 @@ export const OrderListFilterBar = ({ searchParams }: OrderListFilterBarProps) =>
         </select>
 
         <select
-          defaultValue={searchParams.status ?? "all"}
+          value={searchParams.status ?? "all"}
           onChange={(e) => pushParams({ status: e.target.value })}
           className="select select-bordered select-sm dark:border-white/10 dark:bg-white/5"
         >
