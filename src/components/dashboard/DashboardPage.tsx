@@ -157,7 +157,7 @@ export const DashboardPage = () => {
         <div>
           <p className="text-sm text-stone-500 dark:text-stone-400">Daily command center</p>
           <h2 className="mt-1 text-2xl font-semibold text-stone-800 dark:text-stone-100">
-            {orders.length} ออเดอร์กำลังดำเนินการ
+            {orders.length} ออเดอร์ในช่วงนี้
           </h2>
         </div>
       </div>
