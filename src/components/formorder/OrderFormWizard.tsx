@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronRight, FileText, Gift, Truck, UserRound } from "lucide-react";
 import { CustomerFields } from "./CustomerFields";
 import { FlowerItemsFields } from "./FlowerItemsFields";
 import { WrapAndCardFields } from "./WrapAndCardFields";
 import { FulfilmentFields } from "./FulfilmentFields";
 import { StepProgress } from "./StepProgress";
+import { WizardStepHeading } from "./WizardStepHeading";
 import { OrderSummaryCard } from "./OrderSummaryCard";
 import { UploadPic } from "./uploadpic";
 import { useOrderFormState } from "./useOrderFormState";
@@ -47,59 +48,92 @@ export const OrderFormWizard = ({ onPrintOrder }: OrderFormWizardProps) => {
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <section className="min-h-96 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
           {step === 0 && (
-            <CustomerFields
-              lineName={state.lineName}
-              phone={state.phone}
-              note={state.note}
-              onLineNameChange={state.setLineName}
-              onPhoneChange={state.setPhone}
-              onNoteChange={state.setNote}
-            />
+            <>
+              <WizardStepHeading
+                icon={<UserRound />}
+                title="ลูกค้าคนนี้คือใคร?"
+                note="ใช้สำหรับติดต่อและค้นหาออเดอร์ภายหลัง"
+              />
+              <CustomerFields
+                lineName={state.lineName}
+                phone={state.phone}
+                note={state.note}
+                onLineNameChange={state.setLineName}
+                onPhoneChange={state.setPhone}
+                onNoteChange={state.setNote}
+              />
+            </>
           )}
 
           {step === 1 && (
-            <FlowerItemsFields
-              rows={state.flower.rows}
-              bouquetPrice={state.flower.bouquetPrice}
-              onRowChange={state.handleFlowerRowChange}
-              onAddRow={state.handleAddFlowerRow}
-              onRemoveRow={state.handleRemoveFlowerRow}
-              onBouquetPriceChange={(value) => state.setFlower((prev) => ({ ...prev, bouquetPrice: value }))}
-            />
+            <>
+              <WizardStepHeading
+                icon={<Gift />}
+                title="จัดช่อแบบไหนดี?"
+                note="เพิ่มดอกไม้ได้สูงสุด 4 ชนิด"
+              />
+              <FlowerItemsFields
+                rows={state.flower.rows}
+                bouquetPrice={state.flower.bouquetPrice}
+                onRowChange={state.handleFlowerRowChange}
+                onAddRow={state.handleAddFlowerRow}
+                onRemoveRow={state.handleRemoveFlowerRow}
+                onBouquetPriceChange={(value) => state.setFlower((prev) => ({ ...prev, bouquetPrice: value }))}
+              />
+            </>
           )}
 
           {step === 2 && (
-            <WrapAndCardFields
-              paperColor={state.flower.paperColor}
-              bowColor={state.flower.bowColor}
-              hasCard={state.flower.hasCard}
-              cardMessage={state.flower.cardMessage}
-              onPaperColorChange={(value) => state.setFlower((prev) => ({ ...prev, paperColor: value }))}
-              onBowColorChange={(value) => state.setFlower((prev) => ({ ...prev, bowColor: value }))}
-              onHasCardChange={(value) =>
-                state.setFlower((prev) => ({ ...prev, hasCard: value, cardMessage: value ? prev.cardMessage : "" }))
-              }
-              onCardMessageChange={(value) => state.setFlower((prev) => ({ ...prev, cardMessage: value }))}
-            />
+            <>
+              <WizardStepHeading
+                icon={<Gift />}
+                title="ห่อช่อและการ์ดแบบไหน?"
+                note="เลือกกระดาษห่อ สีโบว์ และข้อความการ์ด (ถ้ามี)"
+              />
+              <WrapAndCardFields
+                paperColor={state.flower.paperColor}
+                bowColor={state.flower.bowColor}
+                hasCard={state.flower.hasCard}
+                cardMessage={state.flower.cardMessage}
+                onPaperColorChange={(value) => state.setFlower((prev) => ({ ...prev, paperColor: value }))}
+                onBowColorChange={(value) => state.setFlower((prev) => ({ ...prev, bowColor: value }))}
+                onHasCardChange={(value) =>
+                  state.setFlower((prev) => ({ ...prev, hasCard: value, cardMessage: value ? prev.cardMessage : "" }))
+                }
+                onCardMessageChange={(value) => state.setFlower((prev) => ({ ...prev, cardMessage: value }))}
+              />
+            </>
           )}
 
           {step === 3 && (
-            <FulfilmentFields
-              pickupMode={state.flower.pickupMode}
-              deliveryDate={state.flower.deliveryDate}
-              deliveryTime={state.flower.deliveryTime}
-              delivery={state.flower.delivery}
-              onPickupModeChange={(value) => state.setFlower((prev) => ({ ...prev, pickupMode: value }))}
-              onDeliveryDateChange={(value) => state.setFlower((prev) => ({ ...prev, deliveryDate: value }))}
-              onDeliveryTimeChange={(value) => state.setFlower((prev) => ({ ...prev, deliveryTime: value }))}
-              onDeliveryFieldChange={(field, value) =>
-                state.setFlower((prev) => ({ ...prev, delivery: { ...prev.delivery, [field]: value } }))
-              }
-            />
+            <>
+              <WizardStepHeading
+                icon={<Truck />}
+                title="ลูกค้าจะรับช่ออย่างไร?"
+                note="กำหนดรูปแบบ วัน และเวลานัดรับ"
+              />
+              <FulfilmentFields
+                pickupMode={state.flower.pickupMode}
+                deliveryDate={state.flower.deliveryDate}
+                deliveryTime={state.flower.deliveryTime}
+                delivery={state.flower.delivery}
+                onPickupModeChange={(value) => state.setFlower((prev) => ({ ...prev, pickupMode: value }))}
+                onDeliveryDateChange={(value) => state.setFlower((prev) => ({ ...prev, deliveryDate: value }))}
+                onDeliveryTimeChange={(value) => state.setFlower((prev) => ({ ...prev, deliveryTime: value }))}
+                onDeliveryFieldChange={(field, value) =>
+                  state.setFlower((prev) => ({ ...prev, delivery: { ...prev.delivery, [field]: value } }))
+                }
+              />
+            </>
           )}
 
           {step === 4 && (
             <div className="space-y-5">
+              <WizardStepHeading
+                icon={<FileText />}
+                title="ตรวจสอบก่อนบันทึก"
+                note="เช็กข้อมูลให้ครบ แล้วบันทึกและพิมพ์ใบออเดอร์"
+              />
               <OrderSummaryCard lineName={state.lineName} rows={state.flower.rows} flower={state.flower} />
               <UploadPic
                 onSaveOrder={(images) => state.saveOrder(images)}
