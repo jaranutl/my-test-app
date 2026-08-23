@@ -70,7 +70,7 @@ export const ORDER_SELECT = `
   created_at,
   grab_handoff_at,
   delivered_at,
-  customer:customer_id (
+  customer:customer_id!inner (
     id,
     line_name,
     phone,
@@ -97,6 +97,13 @@ export const getDeliveryInfo = (
 ): DeliveryInfoRecord | null => {
   if (Array.isArray(value)) return value[0] ?? null;
   return value;
+};
+
+export const getOrderTotal = (order: OrderRecord) => {
+  const delivery = getDeliveryInfo(order.delivery_info);
+  const bouquet = Number(order.bouquet_price ?? 0);
+  const deliveryFee = order.pickup_mode === "delivery" ? Number(delivery?.delivery_price ?? 0) : 0;
+  return { bouquet, deliveryFee, total: bouquet + deliveryFee };
 };
 
 export const ATTACHMENT_LABELS = {
