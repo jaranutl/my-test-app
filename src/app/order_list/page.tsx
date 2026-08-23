@@ -94,20 +94,17 @@ export default async function OrderListPage({ searchParams }: OrderListPageProps
   return (
     <div className="min-h-screen p-4 dark:bg-[#121713]">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-xs text-stone-400">คำสั่งซื้อ / ทั้งหมด</p>
-          <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100">
-            รายการคำสั่งซื้อ <span className="text-base font-normal text-stone-400">({totalCount})</span>
-          </h2>
-        </div>
+        <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
+          รายการคำสั่งซื้อ <span className="text-sm font-normal text-stone-400">({totalCount})</span>
+        </h2>
         <div className="flex items-center gap-2">
+          <OrderListThemeToggle />
           <Link
             href="/order_form"
-            className="flex items-center gap-2 rounded-xl bg-[#dd5f83] px-4 py-2 text-sm font-semibold text-white hover:bg-[#ca5277]"
+            className="flex items-center gap-2 rounded-xl bg-[#dd5f83] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#ca5277]"
           >
             <CirclePlus size={16} /> เพิ่มออเดอร์
           </Link>
-          <OrderListThemeToggle />
         </div>
       </div>
 

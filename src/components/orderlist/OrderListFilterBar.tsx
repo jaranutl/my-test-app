@@ -3,7 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { CalendarDays, Search, X } from "lucide-react";
 import { ORDER_STATUS_STEPS } from "@/lib/orderStatus";
 import type { OrderListSearchParams } from "./searchParams";
 
@@ -18,6 +18,14 @@ const PICKUP_OPTIONS = [
   { value: "workin", label: "รับที่ร้าน" },
   { value: "delivery", label: "จัดส่ง" },
 ];
+
+const toTodayParam = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export const OrderListFilterBar = ({ searchParams }: OrderListFilterBarProps) => {
   const router = useRouter();
@@ -110,6 +118,14 @@ export const OrderListFilterBar = ({ searchParams }: OrderListFilterBarProps) =>
             className="w-full bg-transparent text-sm outline-none dark:text-stone-100"
           />
         </label>
+
+        <button
+          type="button"
+          onClick={() => pushParams({ deliveryDate: toTodayParam() })}
+          className="flex h-10 items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-4 text-sm dark:border-white/10 dark:bg-white/5"
+        >
+          <CalendarDays size={16} /> วันนี้
+        </button>
 
         <input
           type="date"
