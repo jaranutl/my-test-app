@@ -33,19 +33,19 @@ export const DateRangeFilter = ({ value, onChange }: DateRangeFilterProps) => {
   };
 
   return (
-    <div className="mb-4 flex flex-wrap items-end gap-3 rounded-md border border-gray-200 bg-white p-4">
-      <button type="button" onClick={() => applyPreset(0)} className="btn btn-sm btn-outline">
+    <div className="mb-5 flex flex-wrap items-end gap-3 rounded-2xl border border-stone-200 bg-white p-5 dark:border-white/10 dark:bg-[#202a23]">
+      <button type="button" onClick={() => applyPreset(0)} className="rounded-xl bg-[#dd5f83] px-3 py-2 text-sm font-semibold text-white">
         วันนี้
       </button>
-      <button type="button" onClick={() => applyPreset(6)} className="btn btn-sm btn-outline">
+      <button type="button" onClick={() => applyPreset(6)} className="rounded-xl border border-stone-200 px-3 py-2 text-sm text-stone-600 dark:border-white/10 dark:text-stone-200">
         7 วัน
       </button>
-      <button type="button" onClick={() => applyPreset(29)} className="btn btn-sm btn-outline">
+      <button type="button" onClick={() => applyPreset(29)} className="rounded-xl border border-stone-200 px-3 py-2 text-sm text-stone-600 dark:border-white/10 dark:text-stone-200">
         30 วัน
       </button>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-700">จากวันที่</label>
+        <label className="text-xs font-medium text-stone-500 dark:text-stone-300">จากวันที่</label>
         <DatePickerInput
           size="sm"
           value={value.start}
@@ -56,7 +56,7 @@ export const DateRangeFilter = ({ value, onChange }: DateRangeFilterProps) => {
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-sm font-medium text-gray-700">ถึงวันที่</label>
+        <label className="text-xs font-medium text-stone-500 dark:text-stone-300">ถึงวันที่</label>
         <DatePickerInput
           size="sm"
           value={value.end}

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
+import { signOrderAttachments } from "@/lib/orderImages.server";
 import { AutoPrint } from "./AutoPrint";
 import { getStatusStep } from "@/lib/orderStatus";
 import { ORDER_SELECT, getDeliveryInfo } from "@/components/orderlist/types";
@@ -61,7 +62,7 @@ export default async function PrintOrderPage({
 
   const items = Array.isArray(data.items) ? data.items : [];
   const delivery = getDeliveryInfo(data.delivery_info);
-  const attachments = Array.isArray(data.attachments) ? data.attachments : [];
+  const attachments = await signOrderAttachments(data.attachments);
   const isDelivery = data.pickup_mode === "delivery";
   const bouquetPrice = Number(data.bouquet_price || 0);
   const deliveryPrice = isDelivery ? Number(delivery?.delivery_price || 0) : 0;
@@ -348,7 +349,7 @@ export default async function PrintOrderPage({
       <main className="print-sheet">
         <header className="print-header print-section">
           <div>
-            <p className="print-brand">SweetPea Flower Studio</p>
+            <p className="print-brand">Sweet Pea & Co. Flower Studio</p>
             <h1 className="print-title">ใบคำสั่งซื้อ</h1>
           </div>
           <div>
@@ -497,10 +498,10 @@ export default async function PrintOrderPage({
                   className="print-figure"
                   key={`${attachment.label}-${index}`}
                 >
-                  {attachment.src && (
+                  {(attachment.full_url || attachment.src) && (
                     <img
                       alt={attachment.label || "รูปภาพออเดอร์"}
-                      src={attachment.src}
+                      src={attachment.full_url ?? attachment.src ?? ""}
                     />
                   )}
                   <figcaption>

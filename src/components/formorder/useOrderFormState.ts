@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { supabaseBrowser } from "@/lib/supabase/browser";
+import { uploadOrderImageInline } from "@/app/order_list/actions";
 import type { FlowerFormData, FlowerRow } from "./types";
 import { createEmptyFlowerRow } from "./types";
 
@@ -15,6 +16,7 @@ export type PrintableOrderImage = {
   label: string;
   src: string;
   fileName: string;
+  file: File;
 };
 
 const createEmptyFlowerForm = (): FlowerFormData => ({
@@ -65,33 +67,13 @@ export const useOrderFormState = (onStatusChange?: (message: string) => void) =>
   const [lineName, setLineName] = useState("");
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
-  const [orderNo, setOrderNo] = useState("");
   const [flower, setFlower] = useState<FlowerFormData>(createEmptyFlowerForm);
 
-  const loadNextOrderNo = async () => {
-    const { data, error } = await supabaseBrowser()
-      .from("order")
-      .select("order_no")
-      .order("order_no", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (error) return;
-    const latestOrderNo = typeof data?.order_no === "number" ? data.order_no : 0;
-    setOrderNo(String(latestOrderNo + 1));
-  };
-
-  useEffect(() => {
-    loadNextOrderNo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const resetForm = async () => {
+  const resetForm = () => {
     setLineName("");
     setPhone("");
     setNote("");
     setFlower(createEmptyFlowerForm());
-    await loadNextOrderNo();
   };
 
   const handleFlowerRowChange = <K extends keyof FlowerRow>(id: string, field: K, value: FlowerRow[K]) => {
@@ -135,7 +117,9 @@ export const useOrderFormState = (onStatusChange?: (message: string) => void) =>
         .select("id")
         .single();
 
-      if (customerError) throw customerError;
+      if (customerError || !customer) {
+        throw new Error(`บันทึกลูกค้าไม่สำเร็จ: ${getErrorMessage(customerError)}`);
+      }
 
       const { data: savedOrder, error: orderError } = await supabase
         .from("order")
@@ -155,7 +139,9 @@ export const useOrderFormState = (onStatusChange?: (message: string) => void) =>
         .select("id, order_no")
         .single();
 
-      if (orderError) throw orderError;
+      if (orderError || !savedOrder) {
+        throw new Error(`บันทึกออเดอร์ไม่สำเร็จ: ${getErrorMessage(orderError)}`);
+      }
 
       if (flower.pickupMode === "delivery") {
         const { error: deliveryError } = await supabase.from("delivery_info").insert({
@@ -166,25 +152,21 @@ export const useOrderFormState = (onStatusChange?: (message: string) => void) =>
           map_link: flower.delivery.mapLink || null,
           delivery_price: parseMoney(flower.delivery.deliveryPrice),
         });
-        if (deliveryError) throw deliveryError;
+        if (deliveryError) {
+          throw new Error(`บันทึกข้อมูลจัดส่งไม่สำเร็จ: ${getErrorMessage(deliveryError)}`);
+        }
       }
 
-      if (images.length > 0) {
-        const { error: attachmentError } = await supabase.from("attachments").insert(
-          images.map((image) => ({
-            order_id: savedOrder.id,
-            label: image.label,
-            file_name: image.fileName,
-            src: image.src,
-          })),
-        );
-        if (attachmentError) throw attachmentError;
+      for (const image of images) {
+        const formData = new FormData();
+        formData.set("photo", image.file, image.fileName);
+        const upload = await uploadOrderImageInline(savedOrder.id, image.label, formData);
+        if (!upload.ok) throw new Error(upload.error);
       }
 
       const savedOrderNo = String(savedOrder.order_no || savedOrder.id);
-      setOrderNo(savedOrderNo);
       onStatusChange?.(`บันทึกออเดอร์ ${savedOrderNo} แล้ว`);
-      await resetForm();
+      resetForm();
       return { orderId: savedOrder.id, orderNo: savedOrderNo };
     } catch (error) {
       onStatusChange?.(`บันทึกไม่สำเร็จ: ${getErrorMessage(error)}`);
@@ -196,7 +178,6 @@ export const useOrderFormState = (onStatusChange?: (message: string) => void) =>
     lineName,
     phone,
     note,
-    orderNo,
     flower,
     setLineName,
     setPhone,

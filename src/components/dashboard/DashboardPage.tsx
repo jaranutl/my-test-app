@@ -129,12 +129,21 @@ export const DashboardPage = () => {
     (sum, order) => sum + (order.pickup_mode === "delivery" ? getDeliveryPrice(order.delivery_info) : 0),
     0,
   );
+  const activeOrderCount = orders.filter((order) => order.status !== "delivered").length;
   const dateHref = `/order_list?deliveryDate=${toDateParam(range.start)}`;
+  const headingDate = new Intl.DateTimeFormat("th-TH", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date());
 
   return (
-    <div className={`dashboard-theme min-h-screen p-4 ${isDark ? "dark bg-[#121713]" : "bg-[#faf9f7]"}`}>
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">ภาพรวมคำสั่งซื้อ</h2>
+    <div className={`dashboard-theme min-h-screen pb-24 md:pb-8 ${isDark ? "dark bg-[#161d18]" : "bg-[#faf9f7]"}`}>
+      <header className="flex min-h-16 items-center justify-between border-b border-stone-200 bg-white px-5 py-3 dark:border-white/10 dark:bg-[#202a23] lg:px-9">
+        <div>
+          <p className="text-xs text-stone-400">{headingDate}</p>
+          <h1 className="font-semibold text-stone-800 dark:text-stone-100">ภาพรวมร้านวันนี้</h1>
+        </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -151,23 +160,28 @@ export const DashboardPage = () => {
             <CirclePlus size={16} /> เพิ่มออเดอร์
           </Link>
         </div>
-      </div>
+      </header>
 
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-sm text-stone-500 dark:text-stone-400">Daily command center</p>
-          <h2 className="mt-1 text-2xl font-semibold text-stone-800 dark:text-stone-100">
-            {orders.length} ออเดอร์ในช่วงนี้
-          </h2>
+      <main className="mx-auto max-w-7xl p-5 lg:p-8">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-sm text-stone-500 dark:text-stone-400">Daily command center</p>
+            <h2 className="mt-1 text-2xl font-semibold text-stone-800 dark:text-stone-100">
+              {activeOrderCount} ออเดอร์กำลังดำเนินการ
+            </h2>
+          </div>
         </div>
-      </div>
 
-      <DateRangeFilter value={range} onChange={setRange} />
+        <DateRangeFilter value={range} onChange={setRange} />
 
-      {errorMessage ? (
+        {errorMessage ? (
         <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-700">
           <p className="mb-3">โหลดข้อมูลไม่สำเร็จ: {errorMessage}</p>
-          <button type="button" onClick={() => setReloadToken((n) => n + 1)} className="btn btn-sm btn-outline">
+          <button
+            type="button"
+            onClick={() => setReloadToken((n) => n + 1)}
+            className="rounded-xl border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50"
+          >
             ลองใหม่
           </button>
         </div>
@@ -181,7 +195,7 @@ export const DashboardPage = () => {
           <div className="h-64 animate-pulse rounded-2xl bg-stone-100 dark:bg-white/5" />
         </div>
       ) : orders.length === 0 ? (
-        <div className="rounded-2xl border border-stone-200 bg-white p-8 text-center dark:border-white/10 dark:bg-[#1a211c]">
+        <div className="rounded-2xl border border-stone-200 bg-white p-8 text-center dark:border-white/10 dark:bg-[#202a23]">
           <p className="mb-4 text-sm text-stone-500 dark:text-stone-400">ยังไม่มีออเดอร์ในช่วงเวลานี้</p>
           <Link
             href="/order_form"
@@ -200,15 +214,16 @@ export const DashboardPage = () => {
             dateHref={dateHref}
           />
 
-          <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
+          <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_320px]">
             <TodayTimeline orders={orders} viewAllHref={dateHref} />
-            <div className="grid gap-4">
+            <aside className="space-y-4">
               <StatusOverview counts={statusCounts} />
               <DeliveryRounds orders={orders} />
-            </div>
+            </aside>
           </div>
         </>
-      )}
+        )}
+      </main>
     </div>
   );
 };

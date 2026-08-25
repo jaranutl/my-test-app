@@ -13,6 +13,7 @@ export type PrintableOrderImage = {
   label: string;
   src: string;
   fileName: string;
+  file: File;
 };
 
 type UploadPicProps = {
@@ -42,19 +43,21 @@ export const UploadPic = ({
   const printableImages = useMemo(() => {
     const images: PrintableOrderImage[] = [];
 
-    if (referenceImage) {
+    if (referenceImage?.file) {
       images.push({
         label: "รูปตัวอย่าง",
         src: referenceImage.src,
         fileName: referenceImage.fileName,
+        file: referenceImage.file,
       });
     }
 
-    if (actualImage) {
+    if (actualImage?.file) {
       images.push({
         label: "รูปช่อที่จัดเสร็จแล้ว",
         src: actualImage.src,
         fileName: actualImage.fileName,
+        file: actualImage.file,
       });
     }
 
@@ -90,20 +93,21 @@ export const UploadPic = ({
   };
 
   return (
-    <div className="flex w-full flex-col gap-3">
-      <div className="card bg-base-200 rounded-box grid h-auto place-items-center">
-        <FileUploader
-          onImageChange={setReferenceImage}
-          resetToken={resetToken}
-        />
-      </div>
-      <div className="divider"></div>
-      <div className="card bg-base-200 rounded-box grid h-auto place-items-center">
-        <FileUploaderActual
-          onImageChange={setActualImage}
-          resetToken={resetToken}
-        />
-      </div>
+    <div className="flex w-full flex-col gap-4">
+      <section className="rounded-2xl border border-stone-200 bg-white p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <div><p className="text-[10px] font-bold tracking-wider text-stone-300">IMAGES</p><h2 className="text-sm font-semibold text-stone-800 dark:text-stone-100">รูปภาพประกอบออเดอร์</h2></div>
+          <span className="text-[10px] text-stone-400">ไม่บังคับ</span>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <div className="grid min-h-32 place-items-center rounded-xl border border-dashed border-stone-300 bg-stone-50">
+            <FileUploader key={`reference-${resetToken}`} onImageChange={setReferenceImage} />
+          </div>
+          <div className="grid min-h-32 place-items-center rounded-xl border border-dashed border-stone-300 bg-stone-50">
+            <FileUploaderActual key={`actual-${resetToken}`} onImageChange={setActualImage} />
+          </div>
+        </div>
+      </section>
 
       {statusMessage && (
         <p className="text-center text-sm font-medium text-emerald-700">
@@ -115,7 +119,7 @@ export const UploadPic = ({
         type="button"
         onClick={handleSaveOrder}
         disabled={isSaving}
-        className="btn btn-soft btn-primary"
+        className="btn border-0 bg-[#dd5f83] text-white shadow-sm hover:bg-[#ca5277]"
       >
         <SaveIcon fontSize="small" />
         {isSaving ? "กำลังบันทึก..." : "บันทึกออเดอร์"}
@@ -124,7 +128,7 @@ export const UploadPic = ({
         type="button"
         onClick={() => onPrintOrder(lastSavedOrder?.orderId)}
         disabled={!lastSavedOrder}
-        className="btn btn-soft btn-secondary"
+        className="btn border-stone-200 bg-white text-stone-700 shadow-sm hover:bg-stone-50 dark:border-white/10 dark:bg-white/5 dark:text-stone-100"
       >
         <PrintIcon fontSize="small" />
         {lastSavedOrder
@@ -134,7 +138,7 @@ export const UploadPic = ({
 
       {savedOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 px-4">
-          <div className="w-full max-w-md rounded-xl border border-gray-200 bg-white p-6 text-center shadow-2xl">
+          <div className="w-full max-w-md rounded-3xl border border-stone-200 bg-white p-6 text-center shadow-2xl">
             <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
               <SaveIcon fontSize="medium" />
             </div>
@@ -156,7 +160,7 @@ export const UploadPic = ({
               <button
                 type="button"
                 onClick={handlePrintFromModal}
-                className="btn btn-primary flex-1 text-white"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#dd5f83] px-4 py-3 text-sm font-semibold text-white"
               >
                 <PrintIcon fontSize="small" />
                 พิมพ์ใบออเดอร์
@@ -164,7 +168,7 @@ export const UploadPic = ({
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="btn btn-outline flex-1"
+                className="flex-1 rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm font-semibold text-stone-600"
               >
                 ปิด
               </button>

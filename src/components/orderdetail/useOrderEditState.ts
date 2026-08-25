@@ -8,6 +8,7 @@ import { ATTACHMENT_LABELS, getDeliveryInfo } from "@/components/orderlist/types
 import type { FlowerFormData, FlowerRow } from "@/components/formorder/types";
 import type { UploadedImage as ReferenceImage } from "@/components/formorder/Fileuploader";
 import type { UploadedImage as FinishedImage } from "@/components/formorder/FileuploaderActual";
+import { deleteOrderImageInline, uploadOrderImageInline } from "@/app/order_list/actions";
 
 const REFERENCE_LABEL = ATTACHMENT_LABELS.reference;
 const FINISHED_LABEL = ATTACHMENT_LABELS.finished;
@@ -66,11 +67,11 @@ export const useOrderEditState = (order: OrderRecord) => {
     phone: order.customer?.phone ?? "",
     note: order.customer?.note ?? "",
     flower: orderToFlowerForm(order),
-    referenceImage: referenceAttachment?.src
-      ? { src: referenceAttachment.src, fileName: referenceAttachment.file_name ?? "" }
+    referenceImage: referenceAttachment?.full_url || referenceAttachment?.src
+      ? { src: referenceAttachment.full_url ?? referenceAttachment.src ?? "", fileName: referenceAttachment.file_name ?? "" }
       : null,
-    finishedImage: finishedAttachment?.src
-      ? { src: finishedAttachment.src, fileName: finishedAttachment.file_name ?? "" }
+    finishedImage: finishedAttachment?.full_url || finishedAttachment?.src
+      ? { src: finishedAttachment.full_url ?? finishedAttachment.src ?? "", fileName: finishedAttachment.file_name ?? "" }
       : null,
   };
 
@@ -116,28 +117,19 @@ export const useOrderEditState = (order: OrderRecord) => {
     });
   };
 
-  const upsertAttachment = async (
+  const persistAttachment = async (
     existingId: number | undefined,
     label: string,
-    image: { src: string; fileName: string } | null,
+    image: { file?: File; fileName: string } | null,
   ) => {
-    const supabase = supabaseBrowser();
-    if (image) {
-      if (existingId) {
-        const { error } = await supabase
-          .from("attachments")
-          .update({ file_name: image.fileName, src: image.src })
-          .eq("id", existingId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from("attachments")
-          .insert({ order_id: order.id, label, file_name: image.fileName, src: image.src });
-        if (error) throw error;
-      }
-    } else if (existingId) {
-      const { error } = await supabase.from("attachments").delete().eq("id", existingId);
-      if (error) throw error;
+    if (image?.file) {
+      const formData = new FormData();
+      formData.set("photo", image.file, image.fileName);
+      const result = await uploadOrderImageInline(order.id, label, formData);
+      if (!result.ok) throw new Error(result.error);
+    } else if (!image && existingId) {
+      const result = await deleteOrderImageInline(order.id, label);
+      if (!result.ok) throw new Error(result.error);
     }
   };
 
@@ -197,8 +189,8 @@ export const useOrderEditState = (order: OrderRecord) => {
         if (deliveryError) throw deliveryError;
       }
 
-      await upsertAttachment(referenceAttachment?.id, REFERENCE_LABEL, referenceImage);
-      await upsertAttachment(finishedAttachment?.id, FINISHED_LABEL, finishedImage);
+      await persistAttachment(referenceAttachment?.id, REFERENCE_LABEL, referenceImage);
+      await persistAttachment(finishedAttachment?.id, FINISHED_LABEL, finishedImage);
 
       setIsSaved(true);
     } catch (error) {

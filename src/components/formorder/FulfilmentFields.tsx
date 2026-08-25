@@ -3,6 +3,7 @@
 import { DatePickerInput } from "@mantine/dates";
 import type { DateValue } from "@mantine/dates";
 import "@mantine/dates/styles.css";
+import { Truck } from "lucide-react";
 import type { DeliveryInfo, PickupMode } from "./types";
 
 export type FulfilmentFieldsProps = {
@@ -34,13 +35,13 @@ export const FulfilmentFields = ({
   onDeliveryFieldChange,
 }: FulfilmentFieldsProps) => {
   return (
-    <div className="space-y-4">
+    <div className="mx-auto mt-8 max-w-2xl space-y-4">
       <div className="flex items-center gap-8">
         <label className="inline-flex cursor-pointer items-center">
           <input
             type="radio"
             name="pickup"
-            className="radio radio-primary radio-md"
+            className="size-4 accent-[#df6688]"
             checked={pickupMode === "workin"}
             onChange={() => onPickupModeChange("workin")}
           />
@@ -50,7 +51,7 @@ export const FulfilmentFields = ({
           <input
             type="radio"
             name="pickup"
-            className="radio radio-primary radio-md"
+            className="size-4 accent-[#df6688]"
             checked={pickupMode === "delivery"}
             onChange={() => onPickupModeChange("delivery")}
           />
@@ -78,7 +79,7 @@ export const FulfilmentFields = ({
           <span className="mb-1.5 block text-sm font-medium text-gray-700">เวลาที่รับช่อ</span>
           <input
             type="time"
-            className="input input-bordered w-full"
+            className="h-10 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
             value={deliveryTime}
             onChange={(e) => onDeliveryTimeChange(e.target.value)}
           />
@@ -86,13 +87,19 @@ export const FulfilmentFields = ({
       </div>
 
       {pickupMode === "delivery" && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4">
-          <div className="mb-3 text-sm font-semibold text-stone-700">รายละเอียดการจัดส่ง</div>
+        <div className="rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="grid size-8 place-items-center rounded-lg bg-amber-100 text-amber-700"><Truck size={16} /></span>
+            <div>
+              <b className="block text-sm text-stone-700">รายละเอียดการจัดส่ง</b>
+              <span className="text-xs text-stone-400">ข้อมูลผู้รับ ที่อยู่ และค่าจัดส่ง</span>
+            </div>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <label className="block">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">ชื่อผู้รับ</span>
               <input
-                className="input input-bordered w-full"
+                className="h-10 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
                 value={delivery.recipientName}
                 onChange={(e) => onDeliveryFieldChange("recipientName", e.target.value)}
                 placeholder="ชื่อผู้รับ"
@@ -103,7 +110,7 @@ export const FulfilmentFields = ({
               <input
                 type="tel"
                 inputMode="numeric"
-                className="input input-bordered w-full"
+                className="h-10 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
                 value={delivery.recipientPhone}
                 onChange={(e) => onDeliveryFieldChange("recipientPhone", formatThaiPhone(e.target.value))}
                 placeholder="xxx-xxx-xxxx"
@@ -112,7 +119,7 @@ export const FulfilmentFields = ({
             <label className="block sm:col-span-2">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">ที่อยู่จัดส่ง</span>
               <textarea
-                className="textarea textarea-bordered w-full"
+                className="w-full rounded-xl border border-stone-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
                 value={delivery.address}
                 onChange={(e) => onDeliveryFieldChange("address", e.target.value)}
                 placeholder="ที่อยู่ละเอียด + จุดสังเกต"
@@ -122,7 +129,7 @@ export const FulfilmentFields = ({
             <label className="block sm:col-span-2">
               <span className="mb-1.5 block text-sm font-medium text-gray-700">ลิงก์แผนที่ (ถ้ามี)</span>
               <input
-                className="input input-bordered w-full"
+                className="h-10 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
                 value={delivery.mapLink}
                 onChange={(e) => onDeliveryFieldChange("mapLink", e.target.value)}
                 placeholder="https://maps.google.com/..."
@@ -133,7 +140,7 @@ export const FulfilmentFields = ({
               <input
                 type="number"
                 min={0}
-                className="input input-bordered w-full"
+                className="h-10 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
                 value={delivery.deliveryPrice}
                 onChange={(e) => onDeliveryFieldChange("deliveryPrice", e.target.value)}
                 placeholder="กรอกจำนวนเงิน (บาท)"

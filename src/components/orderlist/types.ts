@@ -29,6 +29,14 @@ export type AttachmentRecord = {
   label: string | null;
   file_name: string | null;
   src: string | null;
+  storage_path?: string | null;
+  thumbnail_path?: string | null;
+  mime_type?: string | null;
+  size_bytes?: number | null;
+  uploader?: string | null;
+  created_at?: string | null;
+  full_url?: string | null;
+  thumbnail_url?: string | null;
 };
 
 export type OrderRecord = {
@@ -84,12 +92,28 @@ export const ORDER_SELECT = `
     map_link,
     delivery_price
   ),
-  attachments (
-    id,
-    label,
-    file_name,
-    src
-  )
+  attachments (*)
+`;
+
+export const ORDER_LIST_SELECT = `
+  id,
+  order_no,
+  customer_id,
+  status,
+  items,
+  pickup_mode,
+  delivery_date,
+  delivery_time,
+  paper_color,
+  bow_color,
+  bouquet_price,
+  has_card,
+  card_message,
+  created_at,
+  grab_handoff_at,
+  delivered_at,
+  customer:customer_id!inner (id, line_name, phone, note),
+  delivery_info (id, recipient_name, recipient_phone, address, map_link, delivery_price)
 `;
 
 export const getDeliveryInfo = (

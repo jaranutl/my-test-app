@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { ChevronRight, MapPin, Store, Truck } from "lucide-react";
 import { getStatusStep } from "@/lib/orderStatus";
+import { formatOrderTime } from "@/lib/orderPresentation";
 import type { DashboardOrderRow } from "./DashboardPage";
 
 type TodayTimelineProps = {
@@ -31,7 +32,7 @@ export const TodayTimeline = ({ orders, viewAllHref }: TodayTimelineProps) => {
   });
 
   return (
-    <section className="rounded-2xl border border-stone-200 bg-white p-4 dark:border-white/10 dark:bg-[#1a211c] sm:p-6">
+    <section className="rounded-2xl border border-stone-200 bg-white p-4 dark:border-white/10 dark:bg-[#202a23] sm:p-6">
       <div className="mb-3 flex items-center justify-between">
         <div>
           <h3 className="font-semibold text-stone-800 dark:text-stone-100">ลำดับงานวันนี้</h3>
@@ -66,7 +67,7 @@ export const TodayTimeline = ({ orders, viewAllHref }: TodayTimelineProps) => {
             const isDelivery = order.pickup_mode === "delivery";
             const step = getStatusStep(order.status);
             const total = toNumber(order.bouquet_price) + (isDelivery ? getDeliveryPrice(order.delivery_info) : 0);
-            const location = isDelivery ? "จัดส่ง" : "หน้าร้าน SweetPea";
+            const location = isDelivery ? "จัดส่ง" : "หน้าร้าน Sweet Pea & Co.";
 
             return (
               <Link
@@ -75,11 +76,11 @@ export const TodayTimeline = ({ orders, viewAllHref }: TodayTimelineProps) => {
                 className="relative grid grid-cols-[44px_14px_minmax(0,1fr)] gap-3 py-2.5"
               >
                 <b className="pt-3 text-right text-sm text-stone-700 dark:text-stone-200">
-                  {order.delivery_time ? `${order.delivery_time}` : "-"}
+                  {formatOrderTime(order.delivery_time).replace(" น.", "")}
                 </b>
                 <span
                   aria-hidden="true"
-                  className={`z-10 mt-[17px] size-3 rounded-full ring-4 ring-white dark:ring-[#1a211c] ${
+                  className={`z-10 mt-[17px] size-3 rounded-full ring-4 ring-white dark:ring-[#202a23] ${
                     isDelivery ? "bg-amber-400" : "bg-[#dd5f83]"
                   }`}
                 />
@@ -102,7 +103,9 @@ export const TodayTimeline = ({ orders, viewAllHref }: TodayTimelineProps) => {
                   </span>
                   <b className="text-sm tabular-nums text-stone-800 dark:text-stone-100">฿{formatMoney(total)}</b>
                   {step && (
-                    <span className={`badge ${step.badgeClass} w-full justify-center text-white`}>{step.label}</span>
+                    <span className={`w-full rounded-full px-2 py-1 text-center text-[11px] font-medium ${step.badgeClass}`}>
+                      {step.label}
+                    </span>
                   )}
                   <ChevronRight size={14} className="hidden text-stone-300 sm:block dark:text-white/20" />
                 </div>

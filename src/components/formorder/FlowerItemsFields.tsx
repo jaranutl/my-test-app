@@ -101,10 +101,10 @@ export const FlowerItemsFields = ({
   const canAdd = isFlowerRowValid(lastRow) && rows.length < MAX_FLOWER_ROWS;
 
   return (
-    <div className="space-y-4">
+    <div className="mx-auto mt-8 max-w-2xl space-y-3">
       <div className="grid gap-3">
         {rows.map((row, index) => (
-          <div key={row.id} className="rounded-xl border border-stone-200 bg-stone-50/60 p-3">
+          <div key={row.id} className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-xs font-semibold text-stone-500">
                 ดอกไม้รายการที่ {index + 1}
@@ -167,7 +167,7 @@ export const FlowerItemsFields = ({
                   type="number"
                   min={0}
                   step={1}
-                  className="input input-bordered w-full bg-white"
+                  className="h-10 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
                   value={row.quantity}
                   onChange={(e) => onRowChange(row.id, "quantity", Number(e.target.value))}
                 />
@@ -177,23 +177,21 @@ export const FlowerItemsFields = ({
         ))}
       </div>
 
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={onAddRow}
-          disabled={!canAdd}
-          className={`btn btn-sm ${!canAdd ? "btn-disabled" : "btn-primary text-white"}`}
-        >
-          + เพิ่มชนิดดอกไม้ ({rows.length}/{MAX_FLOWER_ROWS})
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={onAddRow}
+        disabled={!canAdd}
+        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#df6688] bg-rose-50 py-3 text-sm font-semibold text-[#d34f77] disabled:border-stone-200 disabled:bg-stone-50 disabled:text-stone-300"
+      >
+        + เพิ่มชนิดดอกไม้ ({rows.length}/{MAX_FLOWER_ROWS})
+      </button>
 
-      <label className="block max-w-xs">
+      <label className="block max-w-xs border-t border-stone-100 pt-5">
         <span className="mb-1.5 block text-xs font-medium text-stone-500">ราคาช่อ</span>
         <input
           type="number"
           min={0}
-          className="input input-bordered w-full"
+          className="h-10 w-full rounded-xl border border-stone-200 bg-white px-3 text-sm outline-none focus:border-[#df6688] focus:ring-3 focus:ring-rose-100"
           value={bouquetPrice}
           onChange={(e) => onBouquetPriceChange(e.target.value)}
           placeholder="กรอกจำนวนเงิน (บาท)"

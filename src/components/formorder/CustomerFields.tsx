@@ -25,7 +25,7 @@ export const CustomerFields = ({
   onNoteChange,
 }: CustomerFieldsProps) => {
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="mx-auto mt-8 max-w-lg space-y-4">
       <label className="block">
         <span className="mb-1.5 block text-xs font-medium text-stone-500">ชื่อ LINE ลูกค้า</span>
         <input
@@ -49,7 +49,7 @@ export const CustomerFields = ({
         />
       </label>
 
-      <label className="block sm:col-span-2">
+      <label className="block">
         <span className="mb-1.5 block text-xs font-medium text-stone-500">หมายเหตุ</span>
         <textarea
           rows={3}

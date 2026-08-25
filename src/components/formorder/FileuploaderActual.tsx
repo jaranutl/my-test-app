@@ -1,19 +1,18 @@
-import { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
+import { useState, useRef, DragEvent, ChangeEvent, ClipboardEvent as ReactClipboardEvent } from "react";
 
 export type UploadedImage = {
   src: string;
   fileName: string;
+  file?: File;
 };
 
 type FileUploaderActualProps = {
   onImageChange?: (image: UploadedImage | null) => void;
-  resetToken?: number;
   initialImage?: UploadedImage | null;
 };
 
 export default function FileUploaderActual({
   onImageChange,
-  resetToken,
   initialImage,
 }: FileUploaderActualProps) {
   const [preview, setPreview] = useState<string | null>(initialImage?.src ?? null);
@@ -32,13 +31,13 @@ export default function FileUploaderActual({
       const nextFileName = file.name || "pasted-image.png";
 
       setPreview(src);
-      onImageChange?.({ src, fileName: nextFileName });
+      onImageChange?.({ src, fileName: nextFileName, file });
     };
     reader.readAsDataURL(file);
   };
 
   // ✅ Paste handler: Ctrl+V / ⌘V
-  const handlePaste = (e: ClipboardEvent) => {
+  const handlePaste = (e: ReactClipboardEvent<HTMLDivElement>) => {
     if (preview) return; // ถ้ามีรูปอยู่แล้ว จะไม่ทับ (ปรับได้)
     const items = e.clipboardData?.items;
     if (!items) return;
@@ -55,18 +54,6 @@ export default function FileUploaderActual({
       }
     }
   };
-
-  // ✅ ให้ paste ได้เมื่อ focus อยู่ใน drop zone (หรือทั้งหน้าได้ตามต้องการ)
-  useEffect(() => {
-    const el = dropRef.current;
-    if (!el) return;
-
-    // ต้อง focusable เพื่อรับ paste ง่าย ๆ
-    const onPaste = (evt: Event) => handlePaste(evt as ClipboardEvent);
-    el.addEventListener("paste", onPaste as EventListener);
-
-    return () => el.removeEventListener("paste", onPaste as EventListener);
-  }, [preview]);
 
   const onDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -99,17 +86,9 @@ export default function FileUploaderActual({
     dropRef.current?.focus();
   };
 
-  useEffect(() => {
-    if (resetToken === undefined) return;
-    setPreview(null);
-    setFileName("");
-    onImageChange?.(null);
-    if (inputRef.current) inputRef.current.value = "";
-  }, [onImageChange, resetToken]);
-
   return (
-    <div className="w-auto max-w-md flex flex-col items-center gap-6 mb-5">
-      <h2 className="text-xl font-semibold text-gray-800 text-center">
+    <div className="flex w-full flex-col items-center">
+      <h2 className="sr-only">
         ช่อที่จัดเสร็จแล้ว
       </h2>
 
@@ -121,20 +100,21 @@ export default function FileUploaderActual({
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
           onDrop={onDrop}
+          onPaste={handlePaste}
           onClick={() => {
             inputRef.current?.click();
             // ให้ focus ที่ dropzone ด้วย (ผู้ใช้กด ⌘V ต่อได้)
             dropRef.current?.focus();
           }}
-          className={`relative cursor-pointer rounded-2xl border-2 border-dashed transition-all duration-200 p-10 flex flex-col items-center justify-center gap-3 outline-none
+          className={`relative flex min-h-28 w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed p-3 text-center text-stone-400 outline-none transition
             ${
               isDragging
-                ? "border-blue-500 bg-blue-50 scale-[1.02]"
-                : "border-gray-300 bg-white hover:border-blue-400 hover:bg-blue-50"
+                ? "scale-[1.02] border-[#dd5f83] bg-rose-50 dark:bg-rose-400/15"
+                : "border-stone-300 bg-white hover:border-[#dd5f83] hover:bg-rose-50 dark:border-white/15 dark:bg-white/5 dark:hover:bg-rose-400/10"
             }`}
         >
           <svg
-            className={`w-12 h-12 transition-colors ${isDragging ? "text-blue-500" : "text-gray-400"}`}
+            className={`size-5 transition-colors ${isDragging ? "text-[#dd5f83]" : "text-stone-400"}`}
             fill="none"
             stroke="currentColor"
             strokeWidth={1.5}
@@ -147,13 +127,13 @@ export default function FileUploaderActual({
             />
           </svg>
 
-          <p className="text-sm text-gray-600 font-medium">
+          <p className="mt-2 text-xs font-medium text-stone-500">
             {isDragging
-              ? "Drop your image here"
-              : "Drag & drop, click, or paste (Ctrl+V / ⌘V)"}
+              ? "วางรูปที่นี่"
+              : "เพิ่มรูปช่อที่จัดเสร็จ"}
           </p>
-          <p className="text-xs text-gray-400">
-            PNG, JPG, GIF, WEBP up to 10MB
+          <p className="mt-1 text-[10px] text-stone-400">
+            PNG, JPG · สูงสุด 10 MB
           </p>
 
           <input

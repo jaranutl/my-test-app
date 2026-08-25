@@ -32,6 +32,7 @@ export const OrderListQuickFilters = ({ searchParams }: OrderListQuickFiltersPro
 
   const isActive = {
     all:
+      !searchParams.q?.trim() &&
       !searchParams.deliveryDate &&
       (!searchParams.pickupMode || searchParams.pickupMode === "all") &&
       (!searchParams.status || searchParams.status === "all"),

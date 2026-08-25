@@ -114,7 +114,7 @@ export const WrapAndCardFields = ({
         </label>
       </div>
 
-      <div className="rounded-xl border border-stone-200 bg-white p-4">
+      <div className="rounded-2xl border border-stone-200 bg-white p-4">
         <label className="flex cursor-pointer items-center justify-between gap-4">
           <div>
             <b className="block text-sm">เขียนการ์ดอวยพร</b>

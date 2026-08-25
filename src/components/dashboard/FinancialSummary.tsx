@@ -33,7 +33,7 @@ export const FinancialSummary = ({
           <Link
             key={card.label}
             href={dateHref}
-            className="rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-rose-200 dark:border-white/10 dark:bg-[#1a211c]"
+            className="rounded-2xl border border-stone-200 bg-white p-5 transition hover:border-rose-200 dark:border-white/10 dark:bg-[#202a23]"
           >
             <div className="mb-5 flex items-center justify-between text-sm text-stone-500 dark:text-stone-300">
               <span>{card.label}</span>

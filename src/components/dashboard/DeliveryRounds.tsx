@@ -1,5 +1,6 @@
 // src/components/dashboard/DeliveryRounds.tsx
 import { Clock3, Truck } from "lucide-react";
+import { formatOrderTime } from "@/lib/orderPresentation";
 import type { DashboardOrderRow } from "./DashboardPage";
 
 type DeliveryRoundsProps = {
@@ -18,7 +19,7 @@ export const DeliveryRounds = ({ orders }: DeliveryRoundsProps) => {
   const sortedRounds = Array.from(rounds.entries()).sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <section className="rounded-2xl border border-stone-200 bg-white p-5 dark:border-white/10 dark:bg-[#1a211c]">
+    <section className="rounded-2xl border border-stone-200 bg-white p-5 dark:border-white/10 dark:bg-[#202a23]">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-stone-800 dark:text-stone-100">รอบจัดส่ง</h3>
         <Truck size={16} className="text-[#cc5578] dark:text-rose-300" />
@@ -35,7 +36,7 @@ export const DeliveryRounds = ({ orders }: DeliveryRoundsProps) => {
               <Clock3 size={13} />
             </span>
             <div>
-              <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">{time} น.</p>
+              <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">{formatOrderTime(time)}</p>
               <p className="text-xs text-stone-400">{count} ออเดอร์</p>
             </div>
           </div>

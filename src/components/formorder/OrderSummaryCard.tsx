@@ -24,7 +24,7 @@ export const OrderSummaryCard = ({ lineName, rows, flower }: OrderSummaryCardPro
     .join(", ");
 
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-5">
+    <div className="rounded-2xl border border-stone-200 bg-white p-5 dark:border-white/10 dark:bg-[#202a23]">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">สรุปออเดอร์</h3>
         <span className="text-xs text-stone-400">Draft · ยังไม่บันทึก</span>

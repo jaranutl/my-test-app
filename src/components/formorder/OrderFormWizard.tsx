@@ -13,7 +13,7 @@ import { UploadPic } from "./uploadpic";
 import { useOrderFormState } from "./useOrderFormState";
 import { isFlowerRowValid } from "./types";
 
-const STEP_TITLES = ["ลูกค้า", "ช่อดอกไม้", "รูปแบบและการ์ด", "การรับสินค้า", "ตรวจสอบ"];
+const STEP_TITLES = ["ลูกค้า", "ช่อดอกไม้", "การรับสินค้า", "ตรวจสอบ"];
 
 export type OrderFormWizardProps = {
   onPrintOrder: (orderId: string | number | null | undefined) => void;
@@ -27,7 +27,7 @@ export const OrderFormWizard = ({ onPrintOrder }: OrderFormWizardProps) => {
   const isStepValid = (index: number) => {
     if (index === 0) return state.lineName.trim().length > 0 && state.phone.trim().length > 0;
     if (index === 1) return state.flower.rows.every(isFlowerRowValid);
-    if (index === 3 && state.flower.pickupMode === "delivery") {
+    if (index === 2 && state.flower.pickupMode === "delivery") {
       return (
         state.flower.delivery.recipientName.trim().length > 0 &&
         state.flower.delivery.address.trim().length > 0
@@ -40,13 +40,18 @@ export const OrderFormWizard = ({ onPrintOrder }: OrderFormWizardProps) => {
   const goBack = () => setStep((current) => Math.max(0, current - 1));
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-6">
-        <StepProgress steps={STEP_TITLES} currentIndex={step} onStepClick={(index) => index < step && setStep(index)} />
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-8 text-center">
+        <span className="text-xs font-semibold uppercase tracking-[.2em] text-[#d34f77]">New order</span>
+        <h1 className="mt-2 text-3xl font-semibold">สร้างคำสั่งซื้อใหม่</h1>
+        <p className="mt-1 text-sm text-stone-400">ทีละขั้น ใช้เวลาประมาณ 2 นาที</p>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <section className="min-h-96 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
+      <div className="mb-6">
+        <StepProgress steps={STEP_TITLES} currentIndex={step} onStepClick={setStep} />
+      </div>
+
+      <section className="min-h-96 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-[#202a23] sm:p-10">
           {step === 0 && (
             <>
               <WizardStepHeading
@@ -80,32 +85,24 @@ export const OrderFormWizard = ({ onPrintOrder }: OrderFormWizardProps) => {
                 onRemoveRow={state.handleRemoveFlowerRow}
                 onBouquetPriceChange={(value) => state.setFlower((prev) => ({ ...prev, bouquetPrice: value }))}
               />
+              <div className="mt-5 border-t border-stone-100 pt-5">
+                <WrapAndCardFields
+                  paperColor={state.flower.paperColor}
+                  bowColor={state.flower.bowColor}
+                  hasCard={state.flower.hasCard}
+                  cardMessage={state.flower.cardMessage}
+                  onPaperColorChange={(value) => state.setFlower((prev) => ({ ...prev, paperColor: value }))}
+                  onBowColorChange={(value) => state.setFlower((prev) => ({ ...prev, bowColor: value }))}
+                  onHasCardChange={(value) =>
+                    state.setFlower((prev) => ({ ...prev, hasCard: value, cardMessage: value ? prev.cardMessage : "" }))
+                  }
+                  onCardMessageChange={(value) => state.setFlower((prev) => ({ ...prev, cardMessage: value }))}
+                />
+              </div>
             </>
           )}
 
           {step === 2 && (
-            <>
-              <WizardStepHeading
-                icon={<Gift />}
-                title="ห่อช่อและการ์ดแบบไหน?"
-                note="เลือกกระดาษห่อ สีโบว์ และข้อความการ์ด (ถ้ามี)"
-              />
-              <WrapAndCardFields
-                paperColor={state.flower.paperColor}
-                bowColor={state.flower.bowColor}
-                hasCard={state.flower.hasCard}
-                cardMessage={state.flower.cardMessage}
-                onPaperColorChange={(value) => state.setFlower((prev) => ({ ...prev, paperColor: value }))}
-                onBowColorChange={(value) => state.setFlower((prev) => ({ ...prev, bowColor: value }))}
-                onHasCardChange={(value) =>
-                  state.setFlower((prev) => ({ ...prev, hasCard: value, cardMessage: value ? prev.cardMessage : "" }))
-                }
-                onCardMessageChange={(value) => state.setFlower((prev) => ({ ...prev, cardMessage: value }))}
-              />
-            </>
-          )}
-
-          {step === 3 && (
             <>
               <WizardStepHeading
                 icon={<Truck />}
@@ -127,34 +124,31 @@ export const OrderFormWizard = ({ onPrintOrder }: OrderFormWizardProps) => {
             </>
           )}
 
-          {step === 4 && (
-            <div className="space-y-5">
+          {step === 3 && (
+            <div>
               <WizardStepHeading
                 icon={<FileText />}
                 title="ตรวจสอบก่อนบันทึก"
                 note="เช็กข้อมูลให้ครบ แล้วบันทึกและพิมพ์ใบออเดอร์"
               />
-              <OrderSummaryCard lineName={state.lineName} rows={state.flower.rows} flower={state.flower} />
-              <UploadPic
-                onSaveOrder={(images) => state.saveOrder(images)}
-                onPrintOrder={onPrintOrder}
-                statusMessage={statusMessage}
-              />
+              <div className="mx-auto mt-7 max-w-lg space-y-3">
+                <OrderSummaryCard lineName={state.lineName} rows={state.flower.rows} flower={state.flower} />
+                <UploadPic
+                  onSaveOrder={(images) => state.saveOrder(images)}
+                  onPrintOrder={onPrintOrder}
+                  statusMessage={statusMessage}
+                />
+              </div>
             </div>
           )}
-        </section>
-
-        <aside className="hidden lg:block lg:sticky lg:top-5 lg:self-start">
-          <OrderSummaryCard lineName={state.lineName} rows={state.flower.rows} flower={state.flower} />
-        </aside>
-      </div>
+      </section>
 
       <div className="mt-5 flex justify-between">
         <button
           type="button"
           disabled={step === 0}
           onClick={goBack}
-          className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm disabled:opacity-30"
+          className="flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-2.5 text-sm disabled:opacity-30 dark:border-white/10 dark:bg-white/5"
         >
           <ArrowLeft size={16} /> ย้อนกลับ
         </button>

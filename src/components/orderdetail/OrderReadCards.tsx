@@ -1,5 +1,6 @@
 "use client";
 
+import { Check, ExternalLink, Flower2, MapPin, MessageSquareText, Phone, Truck, UserRound } from "lucide-react";
 import type { OrderRecord } from "@/components/orderlist/types";
 import { getDeliveryInfo } from "@/components/orderlist/types";
 import { computeOrderTotal } from "@/components/formorder/types";
@@ -11,64 +12,62 @@ const formatMoney = (value: number | string | null | undefined) => {
   return Number.isFinite(amount) ? amount.toLocaleString("th-TH") : String(value);
 };
 
-const formatDate = (value: string | null) => {
-  if (!value) return "-";
-  return new Intl.DateTimeFormat("th-TH", { day: "numeric", month: "long", year: "numeric" }).format(
-    new Date(value),
+export const CustomerReadCard = ({ order }: { order: OrderRecord }) => {
+  const delivery = getDeliveryInfo(order.delivery_info);
+  return (
+    <section className="rounded-3xl border border-stone-200 bg-white p-5 dark:border-white/10 dark:bg-[#1a211c]">
+      <h3 className="font-semibold text-stone-800 dark:text-stone-100">ลูกค้าและผู้รับ</h3>
+      <div className="mt-4 space-y-3 text-sm dark:text-stone-200">
+        <p className="flex items-center gap-2"><UserRound size={15} className="text-[#d34f77]" /> {order.customer?.line_name || "-"}</p>
+        <p className="flex items-center gap-2"><Phone size={15} className="text-[#d34f77]" /> {order.customer?.phone || "-"}</p>
+        {delivery && (
+          <div className="border-t border-stone-100 pt-3 dark:border-white/10">
+            <b>{delivery.recipient_name || "-"}</b>
+            <p className="text-stone-400">{delivery.recipient_phone || "-"}</p>
+          </div>
+        )}
+      </div>
+    </section>
   );
 };
-
-export const CustomerReadCard = ({ order }: { order: OrderRecord }) => (
-  <section className="rounded-2xl border border-stone-200 bg-white p-5">
-    <h3 className="mb-3 text-sm font-semibold text-stone-800">ลูกค้า</h3>
-    <div className="space-y-1 text-sm">
-      <div>{order.customer?.line_name || "-"}</div>
-      <div className="text-stone-500">{order.customer?.phone || "-"}</div>
-      {order.customer?.note && (
-        <div className="mt-2 rounded-lg bg-stone-50 p-2 text-stone-600">{order.customer.note}</div>
-      )}
-    </div>
-  </section>
-);
 
 export const BouquetReadCard = ({ order }: { order: OrderRecord }) => {
   const items = order.items ?? [];
   const finishedPhoto = order.attachments?.find((a) => a.label === "รูปช่อที่จัดเสร็จแล้ว");
   const referencePhoto = order.attachments?.find((a) => a.label === "รูปตัวอย่าง");
+  const finishedPhotoUrl = finishedPhoto?.full_url ?? finishedPhoto?.src;
+  const referencePhotoUrl = referencePhoto?.full_url ?? referencePhoto?.src;
 
   return (
-    <section className="rounded-2xl border border-stone-200 bg-white p-5">
-      <h3 className="mb-3 text-sm font-semibold text-stone-800">ดอกไม้และการ์ด</h3>
-      <div className="space-y-2 text-sm">
-        {items.length > 0 ? (
-          items.map((item, index) => (
-            <div key={index} className="flex justify-between border-b border-stone-100 pb-1 last:border-0">
-              <span>{item.flowerType || "-"} · {item.flowerColor || "-"}</span>
-              <b>{item.quantity ?? "-"} ดอก</b>
-            </div>
-          ))
+    <section className="grid gap-5 rounded-3xl border border-stone-200 bg-white p-5 dark:border-white/10 dark:bg-[#1a211c] sm:grid-cols-[220px_1fr]">
+      <div className="relative grid min-h-56 place-items-center overflow-hidden rounded-3xl bg-gradient-to-br from-rose-100 via-pink-50 to-amber-50 dark:from-rose-400/10 dark:via-white/5 dark:to-amber-400/10">
+        {referencePhotoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={referencePhotoUrl} alt="รูปตัวอย่าง" className="absolute inset-0 size-full object-cover" />
         ) : (
-          <p className="text-stone-500">ไม่มีรายการ</p>
+          <div className="text-center"><p className="text-7xl">💐</p><span className="mt-3 inline-flex rounded-full bg-white/80 px-3 py-1.5 text-xs text-stone-500 dark:bg-white/10 dark:text-stone-300">รูปตัวอย่างลูกค้า</span></div>
         )}
       </div>
-      <div className="mt-3 text-sm text-stone-600">
-        กระดาษห่อ: {order.paper_color || "-"} · โบว์: {order.bow_color || "-"}
-      </div>
-      {order.has_card && order.card_message && (
-        <div className="mt-2 rounded-lg bg-amber-50 p-2 text-sm text-amber-800">การ์ด: {order.card_message}</div>
-      )}
-      {(referencePhoto?.src || finishedPhoto?.src) && (
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {referencePhoto?.src && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={referencePhoto.src} alt="รูปตัวอย่าง" className="h-24 w-full rounded-lg object-cover" />
-          )}
-          {finishedPhoto?.src && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={finishedPhoto.src} alt="รูปช่อที่จัดเสร็จแล้ว" className="h-24 w-full rounded-lg object-cover" />
-          )}
+      <div>
+        <h3 className="flex items-center gap-2 font-semibold text-stone-800 dark:text-stone-100"><Flower2 size={17} className="text-[#d34f77]" /> รายละเอียดช่อดอกไม้</h3>
+        <div className="mt-4 space-y-3 text-sm dark:text-stone-200">
+          {items.length > 0 ? items.map((item, index) => (
+            <div key={index} className="flex items-center justify-between rounded-xl bg-stone-50 px-4 py-3 dark:bg-white/5">
+              <span>{item.flowerType || "-"} · {item.flowerColor || "-"}</span>
+              <span className="flex items-center gap-2"><b>{item.quantity ?? "-"} ดอก</b><Check size={14} className="text-emerald-600" /></span>
+            </div>
+          )) : <p className="text-stone-500">ไม่มีรายการ</p>}
         </div>
-      )}
+        <p className="mt-4 text-sm text-stone-500">กระดาษ {order.paper_color || "-"} · โบว์ {order.bow_color || "-"}</p>
+        {order.has_card && order.card_message && <div className="mt-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800 dark:bg-amber-400/10 dark:text-amber-200"><MessageSquareText size={14} className="mr-2 inline" />{order.card_message}</div>}
+        {finishedPhotoUrl && (
+          <div className="mt-4">
+            <p className="mb-2 text-xs font-medium text-stone-400">รูปช่อที่จัดเสร็จแล้ว</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={finishedPhotoUrl} alt="รูปช่อที่จัดเสร็จแล้ว" className="h-28 w-full rounded-xl object-cover" />
+          </div>
+        )}
+      </div>
     </section>
   );
 };
@@ -77,26 +76,19 @@ export const FulfilmentReadCard = ({ order }: { order: OrderRecord }) => {
   const delivery = getDeliveryInfo(order.delivery_info);
 
   return (
-    <section className="rounded-2xl border border-stone-200 bg-white p-5">
-      <h3 className="mb-3 text-sm font-semibold text-stone-800">การรับสินค้า</h3>
-      <div className="text-sm">
-        <div>{order.pickup_mode === "delivery" ? "จัดส่ง" : "รับที่ร้าน"}</div>
-        <div className="text-stone-500">
-          {formatDate(order.delivery_date)} · {order.delivery_time || "-"}
-        </div>
-      </div>
+    <section className="rounded-3xl border border-amber-200 bg-amber-50/60 p-5 dark:border-amber-300/20 dark:bg-amber-400/10">
+      <h3 className="flex items-center gap-2 font-semibold text-stone-800 dark:text-stone-100"><Truck size={16} className="text-amber-700" /> การจัดส่ง</h3>
       {order.pickup_mode === "delivery" && delivery && (
-        <div className="mt-3 rounded-lg border border-stone-200 bg-stone-50 p-3 text-sm">
-          <div>ผู้รับ: {delivery.recipient_name || "-"}</div>
-          <div>เบอร์โทร: {delivery.recipient_phone || "-"}</div>
-          <div>ที่อยู่: {delivery.address || "-"}</div>
+        <div className="text-sm dark:text-stone-200">
+          <p className="mt-3">{delivery.address || "-"}</p>
           {delivery.map_link && (
-            <a href={delivery.map_link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-              เปิดแผนที่
+            <a href={delivery.map_link} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1 text-sm font-medium text-[#c34f72] dark:text-rose-300">
+              <MapPin size={14} /> เปิดแผนที่ <ExternalLink size={12} />
             </a>
           )}
         </div>
       )}
+      {order.pickup_mode !== "delivery" && <p className="mt-3 text-sm dark:text-stone-200">รับที่ร้าน Sweet Pea & Co.</p>}
     </section>
   );
 };
@@ -117,7 +109,7 @@ export const PaymentSummaryCard = ({ order }: { order: OrderRecord }) => {
   const { bouquet, deliveryFee, total } = computeOrderTotal(flowerLike);
 
   return (
-    <section className="rounded-2xl border border-stone-200 bg-white p-5">
+    <section className="rounded-3xl border border-rose-200 bg-rose-50 p-5">
       <h3 className="mb-3 text-sm font-semibold text-stone-800">ยอดชำระ</h3>
       <div className="space-y-1 text-sm">
         <div className="flex justify-between">

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase/server";
+import { signOrderAttachments } from "@/lib/orderImages.server";
 import { ORDER_SELECT } from "@/components/orderlist/types";
 import type { OrderRecord } from "@/components/orderlist/types";
 import { OrderDetailWorkspace } from "@/components/orderdetail/OrderDetailWorkspace";
@@ -28,9 +29,11 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
     notFound();
   }
 
+  const signedOrder = { ...order, attachments: await signOrderAttachments(order.attachments) };
+
   return (
     <OrderDetailWorkspace
-      order={order}
+      order={signedOrder}
       updateStatusAction={updateOrderStatus.bind(null, order.id)}
       handoffToGrabAction={handoffToGrab.bind(null, order.id)}
       uploadFinishedPhotoAction={uploadFinishedPhoto.bind(null, order.id)}

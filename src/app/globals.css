@@ -129,3 +129,182 @@
     @apply font-sans;
   }
 }
+
+/* Global compact icon scale selected for every app and prototype page. */
+body svg:not([data-keep-icon-size]) {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* Icons inside a shaped background stay inset relative to that container. */
+body :is(.grid, .flex)[class*="size-"][class*="place-items-center"]
+  > svg:not([data-keep-icon-size]) {
+  width: min(42%, 1rem);
+  height: min(42%, 1rem);
+}
+
+.prototype-order-print-sheet {
+  display: none;
+}
+
+@media print {
+  body.prototype-printing * {
+    visibility: hidden !important;
+  }
+
+  body.prototype-printing .prototype-order-print-sheet,
+  body.prototype-printing .prototype-order-print-sheet * {
+    visibility: visible !important;
+  }
+
+  body.prototype-printing .prototype-order-print-sheet {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    padding: 12mm;
+    background: white;
+    color: #1c1917;
+    font-size: 12px;
+  }
+
+  .prototype-order-print-sheet header,
+  .prototype-order-print-sheet footer,
+  .prototype-order-print-sheet .print-grid,
+  .prototype-order-print-sheet p {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .prototype-order-print-sheet header {
+    align-items: flex-start;
+    border-bottom: 2px solid #dd5f83;
+    padding-bottom: 12px;
+  }
+
+  .prototype-order-print-sheet header > div:first-child p,
+  .prototype-order-print-sheet h1,
+  .prototype-order-print-sheet h2 { color: #9f3e5d; }
+  .prototype-order-print-sheet h1 { font-size: 24px; font-weight: 700; }
+  .prototype-order-print-sheet h2 { border-bottom: 1px solid #f3c4d1; margin-bottom: 8px; padding-bottom: 4px; font-size: 14px; font-weight: 700; }
+  .prototype-order-print-sheet section { margin-top: 16px; }
+  .prototype-order-print-sheet span { color: #78716c; }
+  .prototype-order-print-sheet .print-grid > * { flex: 1; }
+  .prototype-order-print-sheet table { width: 100%; border-collapse: collapse; }
+  .prototype-order-print-sheet th,
+  .prototype-order-print-sheet td { border: 1px solid #d6d3d1; padding: 7px; text-align: left; }
+  .prototype-order-print-sheet th { background: #fff1f4; color: #85334f; }
+  .prototype-order-print-sheet .print-note { margin-top: 10px; border: 1px solid #f3c4d1; background: #fffafb; padding: 10px; }
+  .prototype-order-print-sheet footer { justify-content: flex-end; border-top: 2px solid #dd5f83; margin-top: 18px; padding-top: 12px; }
+  .prototype-order-print-sheet footer > div { min-width: 240px; }
+  .prototype-order-print-sheet .print-total { border-top: 1px solid #e96a8d; margin-top: 6px; padding-top: 8px; color: #9f3e5d; font-size: 16px; }
+}
+
+/* Critique: broken = print visual drifted from Design A; why it matters = saved mock and real order looked unrelated; bulletproof = one rose hierarchy across preview and actual A4 output. */
+
+/* Scoped preview theme for the promoted order-form prototype. */
+.order-form-theme.dark .bg-white {
+  background-color: #1a211c !important;
+}
+
+.order-form-theme.dark .bg-stone-50,
+.order-form-theme.dark .bg-stone-50\/60,
+.order-form-theme.dark .bg-gray-50 {
+  background-color: #222b24 !important;
+}
+
+.order-form-theme.dark .border-stone-100,
+.order-form-theme.dark .border-stone-200,
+.order-form-theme.dark .border-stone-300,
+.order-form-theme.dark .border-gray-200 {
+  border-color: rgb(255 255 255 / 0.12) !important;
+}
+
+.order-form-theme.dark .text-stone-800,
+.order-form-theme.dark .text-gray-900,
+.order-form-theme.dark .text-gray-700 {
+  color: #f5f5f4 !important;
+}
+
+.order-form-theme.dark .text-stone-500,
+.order-form-theme.dark .text-gray-600,
+.order-form-theme.dark .text-gray-500 {
+  color: #a8a29e !important;
+}
+
+.order-form-theme.dark input,
+.order-form-theme.dark textarea,
+.order-form-theme.dark select,
+.order-form-theme.dark .input,
+.order-form-theme.dark .textarea,
+.order-form-theme.dark .mantine-Input-input,
+.order-form-theme.dark [data-slot="select-trigger"] {
+  background-color: #222b24 !important;
+  border-color: rgb(255 255 255 / 0.14) !important;
+  color: #fafaf9 !important;
+  -webkit-text-fill-color: #fafaf9;
+  box-shadow: none !important;
+}
+
+.order-form-theme.dark input[type="date"],
+.order-form-theme.dark input[type="time"] {
+  color-scheme: dark;
+}
+
+.order-form-theme.dark input:disabled,
+.order-form-theme.dark input:read-only {
+  background-color: #2a342c !important;
+  color: #a8a29e !important;
+  -webkit-text-fill-color: #a8a29e;
+}
+
+.order-form-theme.dark input::placeholder,
+.order-form-theme.dark textarea::placeholder,
+.order-form-theme.dark .mantine-Input-input::placeholder {
+  color: #78716c !important;
+  -webkit-text-fill-color: #78716c;
+  opacity: 1;
+}
+
+.order-form-theme.dark .bg-blue-50,
+.order-form-theme.dark .hover\:bg-blue-50:hover {
+  background-color: #26352d !important;
+}
+
+/* Mantine renders its own CSS, not Tailwind classes, so it needs this
+   override wherever the app's plain .dark toggle is used (not just inside
+   the order-form-theme scope) — e.g. the dashboard's DateRangeFilter. */
+.dark .mantine-Input-input {
+  background-color: #222b24 !important;
+  border-color: rgb(255 255 255 / 0.14) !important;
+  color: #fafaf9 !important;
+  -webkit-text-fill-color: #fafaf9;
+  box-shadow: none !important;
+}
+
+.dark .mantine-Input-input::placeholder {
+  color: #78716c !important;
+  -webkit-text-fill-color: #78716c;
+  opacity: 1;
+}
+
+.dark [data-slot="select-content"] {
+  border-color: rgb(255 255 255 / 0.14) !important;
+  background-color: #222b24 !important;
+  color: #fafaf9 !important;
+}
+
+.dark [data-slot="select-item"]:focus,
+.dark [data-slot="select-item"][data-highlighted] {
+  background-color: #344238 !important;
+  color: #ffffff !important;
+}
+
+.dark .mantine-Popover-dropdown,
+.dark .mantine-DatePicker-calendarHeader,
+.dark .mantine-DatePicker-month {
+  border-color: rgb(255 255 255 / 0.14) !important;
+  background-color: #222b24 !important;
+  color: #fafaf9 !important;
+}
